@@ -9,6 +9,38 @@ html { scroll-behavior: smooth; }
 body {
   font-family: 'Inter', system-ui, sans-serif;
   color: #1a1a2e;
+  background: #f8f5ee;
 }
 
 .font-display { font-family: 'Playfair Display', Georgia, serif; }
+
+.container-custom {
+  width: min(100% - 2rem, 80rem);
+  margin-inline: auto;
+}
+
+.gold-gradient-text {
+  background: linear-gradient(90deg, #f8e287 0%, #d4af37 45%, #fff3b0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.btn-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #b8860b, #fff0a3, #b8860b);
+  color: #06183d;
+  font-weight: 800;
+  padding: 0.875rem 1.5rem;
+  box-shadow: 0 16px 40px rgba(212, 175, 55, 0.22);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.btn-gold:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 20px 48px rgba(212, 175, 55, 0.3);
+}

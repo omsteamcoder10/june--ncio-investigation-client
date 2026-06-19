@@ -6,6 +6,8 @@ import StatsStrip        from "@/components/home/StatsStrip";
 import ServicesGrid      from "@/components/home/ServicesGrid";
 import MissionBanner     from "@/components/home/MissionBanner";
 import AboutPreview      from "@/components/home/AboutPreview";
+import PremiumHighlights from "@/components/home/PremiumHighlights";
+import HomeShowcaseSections from "@/components/home/HomeShowcaseSections";
 import TeamPreview       from "@/components/home/TeamPreview";
 import MembershipCTA     from "@/components/home/MembershipCTA";
 import GalleryPreview    from "@/components/home/GalleryPreview";
@@ -16,13 +18,17 @@ export default function HomePage() {
     <>
       
       <HeroSection />
-      <QuickServicesStrip />
-      <StatsStrip />
-      <ServicesGrid />
-      <MissionBanner />
       <AboutPreview />
-      <TeamPreview />
+      <PremiumHighlights />
+      {/* <QuickServicesStrip /> */}
+      {/* <StatsStrip /> */}
+      <ServicesGrid />
+      <HomeShowcaseSections />
+      <MissionBanner />
+      
+     
       <MembershipCTA />
+       {/* <TeamPreview /> */}
       <GalleryPreview />
       <DonateCTA />
       

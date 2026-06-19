@@ -70,28 +70,29 @@ export default function IDSearchPage() {
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 80 }, (_, i) => String(currentYear - i));
 
-  const selectClass = "flex-1 px-3 py-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1a237e]/40 bg-white";
+  const selectClass = "min-w-0 flex-1 rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#d4af37]/35";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1a237e] to-[#283593] flex items-center justify-center p-4">
+    <div className="flex min-h-screen items-center justify-center bg-[#f8f5ee] px-4 py-28">
       <div className="w-full max-w-md space-y-6">
 
         {/* Header */}
-        <div className="text-center text-white">
-          <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Search size={28} className="text-white" />
+        <div className="text-center">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#06183d] text-[#f8e287] shadow-lg shadow-[#06183d]/20">
+            <Search size={28} />
           </div>
-          <h1 className="text-2xl font-bold">NCIO Member Search</h1>
-          <p className="text-blue-200 text-sm mt-1">Verify your membership status</p>
+          <h1 className="text-3xl font-bold text-[#06183d]">NCIO Member Search</h1>
+          <p className="mt-2 text-sm text-slate-600">Verify your membership status</p>
         </div>
 
         {/* Search Form */}
-        <div className="bg-white rounded-2xl shadow-2xl p-6 space-y-4">
+        <div className="relative overflow-hidden rounded-[1.5rem] border border-[#d4af37]/35 bg-white p-6 shadow-[0_24px_70px_rgba(4,13,38,0.14)]">
+          <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#8b6b1f] via-[#fff2ad] to-[#8b6b1f]" />
           <form onSubmit={handleSearch} className="space-y-4">
 
             {/* Mobile */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="mb-1.5 block text-sm font-semibold text-slate-700">
                 Mobile Number *
               </label>
               <input
@@ -100,13 +101,13 @@ export default function IDSearchPage() {
                 onChange={(e) => setMobile(e.target.value.replace(/\D/g, "").slice(0, 10))}
                 placeholder="Enter 10-digit mobile number"
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1a237e]/40"
+                className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#d4af37]/35"
               />
             </div>
 
             {/* Date of Birth - 3 dropdowns */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="mb-1.5 block text-sm font-semibold text-slate-700">
                 Date of Birth *
               </label>
               <div className="flex gap-2">
@@ -149,7 +150,7 @@ export default function IDSearchPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#1a237e] hover:bg-[#0d1440] text-white font-bold py-3 rounded-lg transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#06183d] py-3 font-bold text-white transition-all hover:-translate-y-0.5 hover:bg-[#0a2459] disabled:translate-y-0 disabled:opacity-60"
             >
               {loading ? (
                 <span className="animate-spin border-2 border-white border-t-transparent rounded-full w-5 h-5" />
@@ -161,7 +162,7 @@ export default function IDSearchPage() {
 
           {/* Error */}
           {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-red-600 text-sm flex items-center gap-2">
+            <div className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-600">
               <XCircle size={16} /> {error}
             </div>
           )}
@@ -169,8 +170,8 @@ export default function IDSearchPage() {
 
         {/* Result Card */}
         {result && (
-          <div className="bg-white rounded-2xl shadow-2xl p-6 space-y-4">
-            <h2 className="text-base font-bold text-gray-800 border-b pb-2 flex items-center gap-2">
+          <div className="space-y-4 rounded-[1.5rem] border border-[#d4af37]/35 bg-white p-6 shadow-[0_24px_70px_rgba(4,13,38,0.14)]">
+            <h2 className="flex items-center gap-2 border-b border-[#d4af37]/30 pb-2 text-base font-bold text-[#06183d]">
               <CheckCircle size={18} className="text-green-500" /> Member Found
             </h2>
 

@@ -86,14 +86,15 @@ export default function VerifyIDPage() {
         ]}
       />
 
-      <section className="py-14 bg-gray-50 min-h-[60vh]">
+      <section className="min-h-[60vh] bg-[#f8f5ee] py-14">
         <div className="max-w-xl mx-auto px-4 space-y-8">
           {/* Search box */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-            <label className="block text-sm font-semibold text-gray-700 mb-3">
+          <div className="relative overflow-hidden rounded-[1.5rem] border border-[#d4af37]/35 bg-white p-5 shadow-[0_24px_70px_rgba(4,13,38,0.12)] sm:p-6">
+            <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#8b6b1f] via-[#fff2ad] to-[#8b6b1f]" />
+            <label className="mb-3 block text-sm font-semibold text-slate-700">
               Enter Member ID
             </label>
-            <div className="flex gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row">
               <div className="relative flex-1">
                 <CreditCard size={17} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
@@ -101,13 +102,13 @@ export default function VerifyIDPage() {
                   onChange={(e) => { setQuery(e.target.value); setStatus("idle"); setMember(null); }}
                   onKeyDown={(e) => e.key === "Enter" && handleVerify()}
                   placeholder="e.g. NCIO-TN-WZ-CBE-0525-0001"
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[#1a237e]/40 focus:border-[#1a237e] transition-colors"
+                  className="w-full rounded-xl border border-slate-200 py-3 pl-10 pr-4 font-mono text-sm transition-colors focus:border-[#b8860b] focus:outline-none focus:ring-2 focus:ring-[#d4af37]/35"
                 />
               </div>
               <button
                 onClick={handleVerify}
                 disabled={!query.trim() || status === "loading"}
-                className="bg-[#1a237e] hover:bg-[#0d1440] disabled:opacity-50 text-white font-semibold px-5 py-3 rounded-xl text-sm transition-colors flex items-center gap-2 flex-shrink-0"
+                className="flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[#06183d] px-5 py-3 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-[#0a2459] disabled:translate-y-0 disabled:opacity-50"
               >
                 {status === "loading"
                   ? <><Loader2 size={16} className="animate-spin" /> Checking...</>
@@ -140,7 +141,7 @@ export default function VerifyIDPage() {
           {status === "found" && member && (
             <div className="space-y-4">
               {/* Verified badge */}
-              <div className="bg-green-50 border-2 border-green-400 rounded-2xl p-5 flex items-center gap-4">
+              <div className="flex items-center gap-4 rounded-2xl border-2 border-green-300 bg-green-50 p-5">
                 <CheckCircle size={40} className="text-green-500 flex-shrink-0" />
                 <div>
                   <h2 className="text-lg font-bold text-green-800">Verified NCIO Member ✓</h2>
@@ -151,7 +152,7 @@ export default function VerifyIDPage() {
               </div>
 
               {/* Member card */}
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="overflow-hidden rounded-[1.5rem] border border-[#d4af37]/25 bg-white shadow-[0_18px_50px_rgba(4,13,38,0.10)]">
                 {/* Card header */}
                 <div className="flex items-center gap-4 p-5" style={{ background: cardColor }}>
                   <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-white/30 flex-shrink-0">
