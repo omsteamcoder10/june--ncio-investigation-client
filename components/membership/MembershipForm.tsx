@@ -2,11 +2,28 @@
 // components/membership/MembershipForm.tsx
 import { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Loader2, CheckCircle, Upload, Camera } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, Upload, Camera } from "lucide-react";
 import { DISTRICTS, ZONES } from "@/lib/constants";
 import { generateApplicationId } from "@/lib/utils";
 import type { MembershipFormData } from "@/types";
 import axios from "axios";
+
+
+// Error toast card — shown instead of alert()
+function Toast({ toast }: { toast: any }) {
+    if (!toast) return null;
+  return (
+    <div className="fixed top-4 right-4 left-4 sm:left-auto z-[60] flex justify-center sm:justify-end">
+      <div className="bg-white rounded-2xl shadow-xl border border-gray-100 px-6 py-5 flex flex-col items-center gap-1.5 w-full max-w-[300px]">
+        <div className="w-12 h-12 rounded-full border-2 border-dashed border-red-300 flex items-center justify-center mb-1">
+          <XCircle size={26} className="text-red-500" />
+        </div>
+        <p className="font-bold text-base text-red-600">Failed</p>
+        <p className="text-gray-400 text-xs text-center leading-relaxed">{toast.message}</p>
+      </div>
+    </div>
+  );
+}
 
 export default function MembershipForm() {
   const [submitted, setSubmitted] = useState(false);
@@ -16,7 +33,10 @@ export default function MembershipForm() {
   const [generatedAppId, setGeneratedAppId] = useState("");
   const photoInputRef = useRef<HTMLInputElement>(null);
   const signatureInputRef = useRef<HTMLInputElement>(null);
-  
+  // const [submitted, setSubmitted] = useState(false);
+  // const [appId, setAppId] = useState("");
+const [toast, setToast] = useState<any>(null);
+  const [submittedData, setSubmittedData] = useState<any>(null);
   const {
     register,
     handleSubmit,
@@ -78,8 +98,8 @@ export default function MembershipForm() {
       reader.readAsDataURL(file);
     }
   };
-
-  const onSubmit = async (data: MembershipFormData) => {
+  // setSubmittedData(data);
+ const onSubmit = async (data: MembershipFormData) => {
     try {
       const submissionData = {
         ...data,
@@ -91,14 +111,16 @@ export default function MembershipForm() {
         submissionData
       );
 
+      setSubmittedData(data);  // ← இங்க இருக்கணும்
       setAppId(response.data.memberId || response.data.applicationId || generatedAppId);
       setSubmitted(true);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      alert("Failed to submit application");
+      const message = error?.response?.data?.error || "Failed to submit application. Please try again.";
+      setToast({ message });
+      setTimeout(() => setToast(null), 4000);
     }
   };
-
   const inp = (hasError?: boolean) =>
     `w-full rounded-xl border bg-white px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-slate-800 shadow-sm transition-all placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#d4af37]/35 ${
       hasError
@@ -106,27 +128,71 @@ export default function MembershipForm() {
         : "border-slate-200 focus:border-[#b8860b]"
     }`;
 
-  if (submitted) {
-    return (
-      <div className="relative overflow-hidden rounded-[1.5rem] border border-green-300 bg-green-50 p-6 sm:p-8 md:p-10 text-center shadow-[0_18px_50px_rgba(22,101,52,0.12)]">
-        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-green-500 via-emerald-300 to-green-500" />
-        <CheckCircle size={48} className="sm:w-14 sm:h-14 md:w-16 md:h-16 mx-auto mb-3 sm:mb-4 text-green-600" />
-        <h3 className="mb-2 text-xl sm:text-2xl font-bold text-green-900">Application Submitted!</h3>
-        <p className="mb-4 sm:mb-6 text-green-700 text-sm sm:text-base">Your application has been received successfully.</p>
-        <div className="mb-4 sm:mb-6 inline-block rounded-2xl border border-green-300 bg-white p-4 sm:p-5 shadow-sm">
-          <p className="mb-1 text-xs sm:text-sm text-slate-500">Your Application ID</p>
-          <p className="text-xl sm:text-2xl font-bold text-[#06183d]">{appId}</p>
-        </div>
-        <p className="mx-auto max-w-md text-xs sm:text-sm leading-5 sm:leading-6 text-slate-600">
-          Please save this Application ID. You will receive an email confirmation shortly.
-          Our team will review your application within 7 working days.
-        </p>
-      </div>
-    );
-  }
-
+ if (submitted) {
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 sm:space-y-8">
+    <div className="flex items-center justify-center min-h-[500px] p-4">
+      <div className="w-full max-w-md">
+        <div className="bg-white rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.12)] overflow-hidden">
+          <div className="h-1.5 bg-gradient-to-r from-green-400 via-emerald-300 to-green-500" />
+          <div className="p-8 text-center">
+
+            {/* Success Icon */}
+            <div className="relative inline-flex mb-5">
+              <div className="w-20 h-20 rounded-full border-4 border-dashed border-green-300 flex items-center justify-center">
+                <div className="w-14 h-14 rounded-full bg-green-50 flex items-center justify-center">
+                  <CheckCircle size={32} className="text-green-500" strokeWidth={2} />
+                </div>
+              </div>
+            </div>
+
+            <h2 className="text-2xl font-bold text-gray-800 mb-1">Success!</h2>
+            <p className="text-gray-400 text-sm mb-6">
+              Your application has been submitted.<br />
+              We're sending you a confirmation email.
+            </p>
+
+            {/* Application ID */}
+            <div className="bg-gradient-to-br from-[#06183d] to-[#1a237e] rounded-2xl p-5 mb-6 shadow-lg">
+              <p className="text-blue-300 text-xs uppercase tracking-widest mb-2">Application ID</p>
+              <p className="text-white font-mono font-bold text-xl tracking-wider">{appId}</p>
+            </div>
+
+            {/* Submitted Details */}
+            <div className="text-left space-y-1 mb-6">
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Submitted Details</p>
+              {[
+                ['Name', submittedData?.fullName],
+                ['Phone', submittedData?.phone],
+                ['Email', submittedData?.email],
+                ['District', submittedData?.district || '-'],
+                ['Zone', submittedData?.zone],
+                ['Membership', submittedData?.membershipType],
+              ].map(([label, value]) => (
+                <div key={label} className="flex items-center justify-between py-2 border-b border-gray-50">
+                  <span className="text-xs text-gray-400">{label}</span>
+                  <span className="text-xs font-semibold text-gray-700">{value || '-'}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Note */}
+            <div className="bg-amber-50 border border-amber-100 rounded-xl px-4 py-3">
+              <p className="text-amber-700 text-xs leading-relaxed">
+                Our team will review your application within <strong>7 working days</strong>.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ return (
+    <>
+      <Toast toast={toast} />
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 sm:space-y-8">
+        {/* Application ID Display */}
       {/* Application ID Display */}
       <div className="flex flex-col gap-3 sm:gap-4 rounded-2xl border border-[#d4af37]/40 bg-[#fff9e8] p-3 sm:p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -401,7 +467,8 @@ export default function MembershipForm() {
         ) : (
           "Submit Membership Application"
         )}
-      </button>
-    </form>
+     </button>
+      </form>
+    </>
   );
 }
