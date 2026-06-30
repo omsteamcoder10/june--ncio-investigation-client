@@ -49,7 +49,9 @@ const [toast, setToast] = useState<any>(null);
   useEffect(() => {
     const generateUniqueId = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/members/latest-id");
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/members/latest-id`
+        );
         const latestId = response.data.latestId || "NCIO0000";
         const nextId = generateApplicationId(latestId);
         setGeneratedAppId(nextId);
@@ -107,7 +109,7 @@ const [toast, setToast] = useState<any>(null);
       };
 
       const response = await axios.post(
-        "http://localhost:5000/api/members",
+         `${process.env.NEXT_PUBLIC_API_URL}/api/members`,
         submissionData
       );
 

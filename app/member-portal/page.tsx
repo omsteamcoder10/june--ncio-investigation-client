@@ -22,9 +22,9 @@ export default function MemberPortalPage() {
     setMember(null);
     try {
       const dob = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-      const res = await axios.get("http://localhost:5000/api/members/search/public", {
-        params: { mobile, dob },
-      });
+     const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/members/search/public`, {
+  params: { mobile, dob },
+});
       setMember(res.data);
     } catch {
       setError("No member found. Please check your mobile number and date of birth.");
