@@ -40,7 +40,7 @@ const NAV_LINKS = [
   { label: "Team", href: "/team" },
   { label: "Gallery", href: "/gallery" },
   { label: "Updates", href: "/updates" },
-  { label: "Member Portal", href: "/member-portal" },
+  { label: "Member ", href: "/member-portal" },
   { label: "Contact", href: "/contact" },
 ];
 
