@@ -8,12 +8,11 @@ export default function TeamGrid() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/team")
+    axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/team`)
       .then(res => setMembers(res.data))
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
-
   if (loading) return (
     <section className="py-16 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 text-center">

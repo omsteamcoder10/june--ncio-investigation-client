@@ -64,7 +64,7 @@ export default function TeamPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/team")
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/team`)
       .then((r) => r.json())
       .then((data) => setMembers(Array.isArray(data) ? data : []))
       .catch(console.error)

@@ -23,7 +23,7 @@ export default function IDSearchPage() {
     setResult(null);
     try {
       const formattedDob = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-      const res = await axios.get("http://localhost:5000/api/members/search/public", {
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/members/search/public`, {
         params: { mobile, dob: formattedDob },
       });
       setResult(res.data);
