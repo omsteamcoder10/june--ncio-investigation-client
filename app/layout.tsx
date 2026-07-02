@@ -4,7 +4,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
-  title: "NCIO — National Crime Investigates Organization",
+  title: "NCIO ",
   description: "National Crime Investigates Organization — Fighting for justice, healthcare, education, and basic rights for every Indian citizen. Based in Tirupur, Tamil Nadu.",
   icons: {
     icon: "logo/favicon.ico",
