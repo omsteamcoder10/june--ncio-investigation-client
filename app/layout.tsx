@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   title: "NCIO — National Crime Investigates Organization",
   description: "National Crime Investigates Organization — Fighting for justice, healthcare, education, and basic rights for every Indian citizen. Based in Tirupur, Tamil Nadu.",
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon-16x16.png",
-    apple: "/apple-touch-icon.png",
+    icon: "logo/favicon.ico",
+    shortcut: "logo/favicon-16x16.png",
+    apple: "logo/apple-touch-icon.png",
   },
 };
 

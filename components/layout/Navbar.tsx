@@ -39,7 +39,7 @@ const NAV_LINKS = [
   },
   { label: "Team", href: "/team" },
   { label: "Gallery", href: "/gallery" },
-  { label: "Updates", href: "/updates" },
+  // { label: "Updates", href: "/updates" },
   { label: "Member ", href: "/member-portal" },
   { label: "Contact", href: "/contact" },
 ];
@@ -274,7 +274,7 @@ const handleNavClick = (href: string, e: any) => {
             >
               <span className="relative z-10 flex items-center gap-1.5">
                 <Shield size={14} className="text-amber-600" />
-                Join Now
+                Join 
               </span>
               <span className="absolute inset-0 bg-gradient-to-r from-amber-400/30 to-yellow-400/30 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
             </Link>
@@ -284,7 +284,7 @@ const handleNavClick = (href: string, e: any) => {
               onClick={(e) => handleNavClick("/donate", e)}
             >
               <span className="relative z-10 flex items-center gap-1.5">
-                Donate Now
+                Donate 
                 <Sparkles
                   size={14}
                   className="text-amber-200 group-hover:rotate-180 transition-transform duration-500"
@@ -405,14 +405,14 @@ const handleNavClick = (href: string, e: any) => {
               onClick={(e) => handleNavClick("/membership", e)}
               className="w-full bg-gradient-to-r from-[#b8860b] via-[#f8e287] to-[#b8860b] text-[#06183d] font-bold py-3.5 sm:py-4 rounded-full text-sm sm:text-base text-center shadow-lg hover:shadow-[#d4af37]/50 transition-all duration-200 hover:scale-105"
             >
-              Join Now
+              Join 
             </Link>
             <Link
               href="/donate"
               onClick={(e) => handleNavClick("/donate", e)}
               className="w-full border-2 border-[#d4af37] text-[#f8e287] font-bold py-3.5 sm:py-4 rounded-full text-sm sm:text-base text-center hover:bg-[#d4af37] hover:text-[#06183d] transition-all duration-200 transform hover:scale-105"
             >
-              Donate Now
+              Donate 
             </Link>
           </div>
         </div>

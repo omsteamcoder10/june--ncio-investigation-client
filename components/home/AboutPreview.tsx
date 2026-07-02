@@ -22,7 +22,7 @@ export default function AboutPreview() {
               <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-white/20 z-10 pointer-events-none" />
               
               <Image
-                src="/home/about-us.webp"
+                src="/home/1.webp"
                 alt="NCIO volunteers at work"
                 width={600}
                 height={450}

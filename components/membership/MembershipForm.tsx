@@ -33,9 +33,7 @@ export default function MembershipForm() {
   const [generatedAppId, setGeneratedAppId] = useState("");
   const photoInputRef = useRef<HTMLInputElement>(null);
   const signatureInputRef = useRef<HTMLInputElement>(null);
-  // const [submitted, setSubmitted] = useState(false);
-  // const [appId, setAppId] = useState("");
-const [toast, setToast] = useState<any>(null);
+  const [toast, setToast] = useState<any>(null);
   const [submittedData, setSubmittedData] = useState<any>(null);
   const {
     register,
@@ -68,6 +66,7 @@ const [toast, setToast] = useState<any>(null);
   }, [setValue]);
 
   const membershipType = watch("membershipType");
+  const districtValue = watch("district");
 
   useEffect(() => {
     if (membershipType === "STATE") {
@@ -100,11 +99,14 @@ const [toast, setToast] = useState<any>(null);
       reader.readAsDataURL(file);
     }
   };
-  // setSubmittedData(data);
- const onSubmit = async (data: MembershipFormData) => {
+
+  const onSubmit = async (data: MembershipFormData) => {
     try {
       const submissionData = {
         ...data,
+        // Make sure the currently selected district is always included,
+        // unless membership type is STATE (which doesn't need one).
+        district: data.membershipType === "STATE" ? "" : (districtValue || data.district),
         applicationId: generatedAppId,
       };
 
@@ -113,7 +115,7 @@ const [toast, setToast] = useState<any>(null);
         submissionData
       );
 
-      setSubmittedData(data);  // ← இங்க இருக்கணும்
+      setSubmittedData(submissionData);
       setAppId(response.data.memberId || response.data.applicationId || generatedAppId);
       setSubmitted(true);
     } catch (error: any) {
@@ -195,7 +197,6 @@ const [toast, setToast] = useState<any>(null);
       <Toast toast={toast} />
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 sm:space-y-8">
         {/* Application ID Display */}
-      {/* Application ID Display */}
       <div className="flex flex-col gap-3 sm:gap-4 rounded-2xl border border-[#d4af37]/40 bg-[#fff9e8] p-3 sm:p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-xs sm:text-sm font-bold text-[#06183d]">Application ID</p>
@@ -270,6 +271,8 @@ const [toast, setToast] = useState<any>(null);
             <input {...register("city", { required: true })} className={inp(!!errors.city)} placeholder="City or town" />
             {errors.city && <p className="text-red-500 text-[10px] sm:text-xs mt-1">City is required</p>}
           </div>
+
+          {/* ===== DISTRICT FIELD — FIXED ===== */}
           <div>
             <label className="mb-1 block text-xs sm:text-sm font-semibold text-slate-700">
               District {membershipType !== "STATE" && "*"}
@@ -277,6 +280,8 @@ const [toast, setToast] = useState<any>(null);
             <select
               {...register("district", { required: membershipType !== "STATE" })}
               className={inp(!!errors.district)}
+              value={districtValue || ""}
+              onChange={(e) => setValue("district", e.target.value, { shouldValidate: true })}
               disabled={membershipType === "STATE"}
             >
               <option value="">Select district</option>
@@ -287,6 +292,8 @@ const [toast, setToast] = useState<any>(null);
             )}
             {errors.district && <p className="text-red-500 text-[10px] sm:text-xs mt-1">District is required</p>}
           </div>
+          {/* ===== END DISTRICT FIELD ===== */}
+
           <div>
             <label className="mb-1 block text-xs sm:text-sm font-semibold text-slate-700">Zone *</label>
             <select {...register("zone", { required: true })} className={inp(!!errors.zone)}>

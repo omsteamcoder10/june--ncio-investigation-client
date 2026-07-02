@@ -7,14 +7,14 @@ import SectionHeading from "@/components/shared/SectionHeading";
 
 // Gallery images directly in component
 const GALLERY_PHOTOS = [
-  { url: "/gallery/photo1.webp" },
-  { url: "/gallery/photo2.webp" },
-  { url: "/gallery/photo3.webp" },
-  { url: "/gallery/photo4.webp" },
-  { url: "/gallery/photo5.webp" },
-  { url: "/gallery/photo6.webp" },
-  { url: "/gallery/photo7.webp" },
-  { url: "/gallery/photo8.webp" },
+  { url: "/gallery/1.webp" },
+  { url: "/gallery/2.webp" },
+  { url: "/gallery/3.webp" },
+  { url: "/gallery/4.webp" },
+  { url: "/gallery/5.webp" },
+  { url: "/gallery/6.webp" },
+  { url: "/gallery/7.webp" },
+  { url: "/gallery/8.webp" },
 ];
 
 export default function GalleryPreview() {

@@ -1,6 +1,6 @@
 "use client";
-import { useState, useRef } from "react";
-import { Search, Download, CheckCircle, XCircle, Clock, User, CreditCard } from "lucide-react";
+import { useState } from "react";
+import { Search, CheckCircle, XCircle, Clock, User, CreditCard } from "lucide-react";
 import axios from "axios";
 
 export default function MemberPortalPage() {
@@ -11,8 +11,6 @@ export default function MemberPortalPage() {
   const [year, setYear] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [downloading, setDownloading] = useState(false);
-  const cardRef = useRef<HTMLDivElement>(null);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,77 +20,14 @@ export default function MemberPortalPage() {
     setMember(null);
     try {
       const dob = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-     const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/members/search/public`, {
-  params: { mobile, dob },
-});
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/members/search/public`, {
+        params: { mobile, dob },
+      });
       setMember(res.data);
     } catch {
       setError("No member found. Please check your mobile number and date of birth.");
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleDownload = async () => {
-    if (!member || member.status !== "APPROVED") return;
-    
-    setDownloading(true);
-    try {
-      const html2canvas = (await import("html2canvas")).default;
-      const jsPDF = (await import("jspdf")).default;
-      
-      const card = cardRef.current;
-      if (!card) {
-        throw new Error("Card element not found");
-      }
-
-      const images = card.querySelectorAll('img');
-      await Promise.all(
-        Array.from(images).map((img) => {
-          if (img.complete) return Promise.resolve();
-          return new Promise((resolve) => {
-            img.onload = resolve;
-            img.onerror = resolve;
-          });
-        })
-      );
-
-      const canvas = await html2canvas(card, {
-        scale: 4,
-        useCORS: true,
-        backgroundColor: "#ffffff",
-        logging: false,
-        allowTaint: true,
-        width: card.scrollWidth,
-        height: card.scrollHeight,
-      });
-
-      const pdf = new jsPDF({
-        orientation: "landscape",
-        unit: "mm",
-        format: [85.6, 54],
-      });
-
-      const imgData = canvas.toDataURL("image/png", 1.0);
-      pdf.addImage(imgData, "PNG", 0, 0, 85.6, 54);
-
-      const pdfBlob = pdf.output("blob");
-      const url = URL.createObjectURL(pdfBlob);
-      
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `NCIO_ID_${member.application_id || member.id_card_number || "CARD"}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      
-      setTimeout(() => URL.revokeObjectURL(url), 100);
-      
-    } catch (error: any) {
-      console.error("Download error:", error);
-      alert("Failed to download ID card. Please try again.");
-    } finally {
-      setDownloading(false);
     }
   };
 
@@ -113,9 +48,6 @@ export default function MemberPortalPage() {
     PENDING: "bg-orange-50 border-orange-200 text-orange-700",
     REJECTED: "bg-red-50 border-red-200 text-red-700",
   };
-
-  const approvedDate = member?.approved_at
-    ? new Date(member.approved_at).toLocaleDateString("en-IN") : "-";
 
   const selectClass = "flex-1 px-2 sm:px-3 py-2.5 sm:py-3 border border-gray-200 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 bg-white";
 
@@ -201,7 +133,7 @@ export default function MemberPortalPage() {
             <div className="space-y-4 sm:space-y-5">
 
               {/* Status */}
-              <div className={`rounded-xl px-3 sm:px-5 py-2.5 sm:py-3 border text-xs sm:text-sm font-medium flex items-center gap-2 flex-wrap ${statusColor[member.status]}`}>
+              {/* <div className={`rounded-xl px-3 sm:px-5 py-2.5 sm:py-3 border text-xs sm:text-sm font-medium flex items-center gap-2 flex-wrap ${statusColor[member.status]}`}>
                 {member.status === "APPROVED" && <CheckCircle size={15} className="sm:w-4 sm:h-4 flex-shrink-0" />}
                 {member.status === "PENDING" && <Clock size={15} className="sm:w-4 sm:h-4 flex-shrink-0" />}
                 {member.status === "REJECTED" && <XCircle size={15} className="sm:w-4 sm:h-4 flex-shrink-0" />}
@@ -209,7 +141,7 @@ export default function MemberPortalPage() {
                 <span className={`ml-auto px-2 py-0.5 rounded-full text-[9px] sm:text-xs font-bold border ${scheme.badge}`}>
                   {scheme.label}
                 </span>
-              </div>
+              </div> */}
 
               {/* Member Info */}
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-5">
@@ -233,164 +165,8 @@ export default function MemberPortalPage() {
                 </div>
               </div>
 
-              {/* ID Card */}
-              {member.status === "APPROVED" && (
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-5">
-                  <h3 className="text-[10px] sm:text-sm font-bold text-gray-500 uppercase tracking-wider mb-3 sm:mb-4">ID Card Preview</h3>
-
-                  {/* Responsive ID Card Container */}
-                  <div className="flex justify-center">
-                    <div
-                      ref={cardRef}
-                      style={{
-                        width: "100%",
-                        maxWidth: 342,
-                        aspectRatio: "342/216",
-                        borderRadius: 12,
-                        overflow: "hidden",
-                        fontFamily: "Arial, sans-serif",
-                        position: "relative",
-                        boxShadow: "0 8px 32px rgba(0,0,0,0.18)",
-                        backgroundColor: "#fff",
-                        border: `3px solid ${scheme.primary}`,
-                      }}
-                    >
-                      {/* Diagonal accent */}
-                      <div style={{
-                        position: "absolute", top: 0, right: 0,
-                        width: "35%", height: "100%",
-                        background: `linear-gradient(135deg, transparent 40%, ${scheme.primary}18 100%)`,
-                        pointerEvents: "none",
-                      }} />
-
-                      {/* Header */}
-                      <div style={{
-                        background: `linear-gradient(135deg, ${scheme.primary} 0%, ${scheme.secondary} 100%)`,
-                        padding: "3% 4%",
-                        display: "flex", alignItems: "center", justifyContent: "space-between",
-                      }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "3%" }}>
-                          <div style={{
-                            width: "9%", aspectRatio: "1/1", borderRadius: "50%",
-                            background: "rgba(255,255,255,0.2)",
-                            border: "2px solid rgba(255,255,255,0.5)",
-                            display: "flex", alignItems: "center", justifyContent: "center",
-                            color: "white", fontWeight: 900, fontSize: "3.8%",
-                          }}>N</div>
-                          <div>
-                            <div style={{ color: "white", fontWeight: 900, fontSize: "3.8%", letterSpacing: 1 }}>NCIO</div>
-                            <div style={{ color: "rgba(255,255,255,0.7)", fontSize: "2.3%", letterSpacing: 1 }}>OFFICIAL MEMBER</div>
-                          </div>
-                        </div>
-                        <div style={{
-                          background: "rgba(255,255,255,0.15)",
-                          border: "1px solid rgba(255,255,255,0.4)",
-                          borderRadius: 4, padding: "1% 2.5%",
-                          color: "white", fontSize: "2.6%", fontWeight: 700, letterSpacing: 1.5,
-                        }}>{scheme.label}</div>
-                      </div>
-
-                      {/* Body */}
-                      <div style={{ padding: "3.5% 4%", display: "flex", gap: "3.5%", alignItems: "flex-start" }}>
-                        {/* Photo */}
-                        {member.photo ? (
-                          <img
-                            src={member.photo}
-                            alt="Member"
-                            style={{
-                              width: "20.5%", aspectRatio: "70/84",
-                              borderRadius: 6,
-                              objectFit: "cover",
-                              border: `3px solid ${scheme.primary}`,
-                              flexShrink: 0,
-                              display: "block",
-                            }}
-                            crossOrigin="anonymous"
-                          />
-                        ) : (
-                          <div style={{
-                            width: "20.5%", aspectRatio: "70/84",
-                            borderRadius: 6,
-                            background: `linear-gradient(135deg, ${scheme.primary}22, ${scheme.secondary}44)`,
-                            border: `3px solid ${scheme.primary}`,
-                            display: "flex", alignItems: "center", justifyContent: "center",
-                            flexShrink: 0, flexDirection: "column", gap: "2%",
-                          }}>
-                            <div style={{
-                              width: "50%", aspectRatio: "1/1", borderRadius: "50%",
-                              background: scheme.primary,
-                              display: "flex", alignItems: "center", justifyContent: "center",
-                              color: "white", fontWeight: 900, fontSize: "22%",
-                            }}>
-                              {member.full_name?.charAt(0).toUpperCase()}
-                            </div>
-                            <div style={{ fontSize: "2.3%", color: scheme.primary, fontWeight: 600 }}>MEMBER</div>
-                          </div>
-                        )}
-
-                        {/* Info */}
-                        <div style={{ flex: 1 }}>
-                          <div style={{ fontWeight: 900, color: "#111827", fontSize: "3.8%", marginBottom: "1%" }}>
-                            {member.full_name}
-                          </div>
-                          <div style={{ fontSize: "2.9%", color: "#6b7280", marginBottom: "2.5%" }}>
-                            {member.membership_type} Member
-                          </div>
-                          {[
-                            ["District", member.district],
-                            ["Zone", member.zone],
-                            ["Phone", mobile],
-                          ].map(([label, value]) => (
-                            <div key={label} style={{ display: "flex", gap: "1%", fontSize: "2.8%", marginBottom: "1%" }}>
-                              <span style={{ color: "#9ca3af", minWidth: "12%" }}>{label}:</span>
-                              <span style={{ color: "#1f2937", fontWeight: 600 }}>{value}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Footer */}
-                      <div style={{
-                        position: "absolute", bottom: 0, left: 0, right: 0,
-                        background: `linear-gradient(90deg, ${scheme.primary} 0%, ${scheme.secondary} 100%)`,
-                        padding: "1.5% 4%",
-                        display: "flex", justifyContent: "space-between", alignItems: "center",
-                      }}>
-                        <div style={{ fontFamily: "monospace", fontSize: "2.9%", color: "white", fontWeight: 700, letterSpacing: 1 }}>
-                          {member.id_card_number}
-                        </div>
-                        <div style={{ fontSize: "2.5%", color: "rgba(255,255,255,0.75)" }}>
-                          Valid: {approvedDate}
-                        </div>
-                        <div style={{ display: "flex", gap: "1%", opacity: 0.5 }}>
-                          {[3,1,2,3,1,2,1,3,2,1,3,1].map((h, i) => (
-                            <div key={i} style={{ width: "1.5%", height: h * 4, background: "white", borderRadius: 1 }} />
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <button 
-                    onClick={handleDownload} 
-                    disabled={downloading}
-                    className="w-full mt-3 sm:mt-4 bg-[#1a237e] hover:bg-[#0d1440] text-white py-2.5 sm:py-3 rounded-xl font-semibold text-xs sm:text-sm transition-colors disabled:opacity-60 flex items-center justify-center gap-2 shadow-md"
-                  >
-                    {downloading ? (
-                      <>
-                        <div className="w-3.5 sm:w-4 h-3.5 sm:h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        Generating PDF...
-                      </>
-                    ) : (
-                      <>
-                        <Download size={15} className="sm:w-4 sm:h-4" />
-                        Download ID Card (PDF)
-                      </>
-                    )}
-                  </button>
-                  <p className="text-[10px] sm:text-xs text-gray-400 text-center mt-1.5 sm:mt-2">CR80 standard card size · High quality PDF</p>
-                </div>
-              )}
+              {/* ✅ ID Card Preview — HIDDEN */}
+              {/* APPROVED: card preview & download button removed */}
 
               {member.status === "PENDING" && (
                 <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 sm:p-5 text-center">

@@ -139,7 +139,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="text-[#f9a825] hover:text-[#f57f17] font-semibold transition-colors duration-200 hover:underline"
               >
-                oms
+                OMS
               </a>
             </p>
           </div>

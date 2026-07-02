@@ -12,7 +12,7 @@ export default function WhoWeAre() {
             <div className="absolute -inset-4 border-2 border-[#bf953f] rounded-[1.5rem] sm:rounded-[2rem] translate-x-3 sm:translate-x-4 translate-y-3 sm:translate-y-4 -z-10"></div>
             <div className="rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden shadow-2xl">
               <img 
-                src="/gallery/photo8.webp" 
+                src="/gallery/8.webp" 
                 alt="NCIO Community Impact" 
                 className="w-full h-[250px] sm:h-[300px] md:h-[350px] lg:h-auto object-cover"
               />
