@@ -4,6 +4,12 @@ import ContactInfo from "@/components/contact/ContactInfo";
 import ContactForm from "@/components/contact/ContactForm";
 import GoogleMap from "@/components/contact/GoogleMap";
 import FloatingButtons from "@/components/layout/FloatingButtons";
+import { getSeoMeta } from "@/lib/getSeoMeta";
+
+
+export async function generateMetadata() {
+  return getSeoMeta('/contact', 'Contact NCIO');
+}
 
 export default function ContactPage() {
   return (

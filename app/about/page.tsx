@@ -6,6 +6,11 @@ import MissionVision from "@/components/about/MissionVision";
 import OurPurpose from "@/components/about/OurPurpose";
 import WhyChooseUs from "@/components/about/WhyChooseUs";
 import FloatingButtons from "@/components/layout/FloatingButtons";
+import { getSeoMeta } from '@/lib/getSeoMeta';
+
+export async function generateMetadata() {
+  return getSeoMeta('/about', 'About NCIO');
+}
 
 export default function AboutPage() {
   return (

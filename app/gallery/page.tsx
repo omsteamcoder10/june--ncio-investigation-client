@@ -2,6 +2,12 @@
 import FloatingButtons from "@/components/layout/FloatingButtons";
 import PageBanner  from "@/components/shared/PageBanner";
 import GalleryGrid from "@/components/gallery/GalleryGrid";
+import { getSeoMeta } from "@/lib/getSeoMeta";
+
+
+export async function generateMetadata() {
+  return getSeoMeta('/gallery', 'Gallery - NCIO');
+}
 
 export default function GalleryPage() {
   return (

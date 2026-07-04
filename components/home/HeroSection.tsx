@@ -2,8 +2,42 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+
+const DEFAULT_HERO = {
+  heading_line1: "Working For",
+  heading_line2: "Justice &",
+  heading_line3: "Social Service",
+  description:
+    "Dedicated to serving society through legal aid, RTI services, blood donation drives, medical camps, awareness programs and community support initiatives.",
+  button_text: "Contact Us",
+  button_link: "/contact",
+  image: "/home/4.png",
+  image_alt: "NCIO Team",
+};
 
 export default function HeroSection() {
+  const [content, setContent] = useState(DEFAULT_HERO);
+
+  useEffect(() => {
+    const loadContent = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/content?page=home&section=hero`
+        );
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data && typeof data === "object" && !Array.isArray(data)) {
+          setContent((prev) => ({ ...prev, ...data }));
+        }
+      } catch (err) {
+        console.error("Failed to load home hero content:", err);
+      }
+    };
+
+    loadContent();
+  }, []);
+
   return (
     <section className="relative overflow-hidden bg-[#102b5c] py-16 sm:py-20 md:py-24 lg:py-28">
 
@@ -30,12 +64,12 @@ export default function HeroSection() {
           <div className="text-center lg:text-left pt-6 sm:pt-10 md:pt-14 lg:pt-16">
 
             <h1 className="text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-black leading-tight text-white">
-              Working For
+              {content.heading_line1 || DEFAULT_HERO.heading_line1}
               <span className="block text-[#d4af37]">
-                Justice &
+                {content.heading_line2 || DEFAULT_HERO.heading_line2}
               </span>
               <span className="block text-[#d4af37]">
-                Social Service
+                {content.heading_line3 || DEFAULT_HERO.heading_line3}
               </span>
             </h1>
 
@@ -48,14 +82,12 @@ export default function HeroSection() {
             </div>
 
             <p className="mt-8 text-lg md:text-xl text-white/80 leading-relaxed max-w-xl mx-auto lg:mx-0">
-              Dedicated to serving society through legal aid,
-              RTI services, blood donation drives, medical camps,
-              awareness programs and community support initiatives.
+              {content.description || DEFAULT_HERO.description}
             </p>
 
             <div className="mt-10 flex justify-center lg:justify-start">
               <Link
-                href="/contact"
+                href={content.button_link || DEFAULT_HERO.button_link}
                 className="
                   px-8 py-4
                   rounded-full
@@ -71,7 +103,7 @@ export default function HeroSection() {
                   shadow-lg
                 "
               >
-                Contact Us
+                {content.button_text || DEFAULT_HERO.button_text}
               </Link>
             </div>
 
@@ -138,8 +170,8 @@ export default function HeroSection() {
                 >
 
                   <Image
-                    src="/home/4.png"
-                    alt="NCIO Team"
+                    src={content.image || DEFAULT_HERO.image}
+                    alt={content.image_alt || DEFAULT_HERO.image_alt}
                     fill
                     priority
                     className="
