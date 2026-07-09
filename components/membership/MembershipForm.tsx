@@ -10,21 +10,68 @@ import axios from "axios";
 
 
 // Error toast card — shown instead of alert()
-function Toast({ toast }: { toast: any }) {
-    if (!toast) return null;
+// Professional duplicate-application error card
+function DuplicateApplicationCard({ toast, onClose }: { toast: any; onClose: () => void }) {
+  if (!toast) return null;
+
+  const isDuplicate = !!(toast.existingApplicationId && toast.existingStatus);
+
   return (
-    <div className="fixed top-4 right-4 left-4 sm:left-auto z-[60] flex justify-center sm:justify-end">
-      <div className="bg-white rounded-2xl shadow-xl border border-gray-100 px-6 py-5 flex flex-col items-center gap-1.5 w-full max-w-[300px]">
-        <div className="w-12 h-12 rounded-full border-2 border-dashed border-red-300 flex items-center justify-center mb-1">
-          <XCircle size={26} className="text-red-500" />
+    <div className="fixed inset-0 bg-black/40 z-[60] flex items-center justify-center p-4">
+      <div className="w-full max-w-sm rounded-2xl bg-white shadow-2xl overflow-hidden border border-red-100">
+        <div className="bg-red-50 px-6 py-6 text-center">
+          <div className="w-14 h-14 rounded-full bg-white border-2 border-red-200 flex items-center justify-center mx-auto mb-3">
+            <XCircle size={28} className="text-red-500" />
+          </div>
+          <p className="font-bold text-base text-red-700">
+            {isDuplicate ? "Application already exists" : "Submission failed"}
+          </p>
         </div>
-        <p className="font-bold text-base text-red-600">Failed</p>
-        <p className="text-gray-400 text-xs text-center leading-relaxed">{toast.message}</p>
+
+        <div className="p-6">
+          <p className="text-sm text-slate-600 text-center leading-relaxed mb-5">
+            {isDuplicate
+              ? "We found an existing application registered with this Aadhar number."
+              : toast.message}
+          </p>
+
+          {isDuplicate && (
+            <>
+              <div className="bg-[#fbfaf7] rounded-xl px-4 py-3 mb-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-slate-400">Application ID</span>
+                  <span className="font-mono text-sm font-bold text-[#06183d]">
+                    {toast.existingApplicationId}
+                  </span>
+                </div>
+              </div>
+
+              <div className="bg-[#fbfaf7] rounded-xl px-4 py-3 mb-5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-slate-400">Status</span>
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">
+                    {toast.existingStatus}
+                  </span>
+                </div>
+              </div>
+
+              <p className="text-xs text-slate-400 text-center mb-5">
+                Contact NCIO support if you believe this is an error.
+              </p>
+            </>
+          )}
+
+          <button
+            onClick={onClose}
+            className="w-full py-3 rounded-xl bg-[#06183d] text-white text-sm font-bold hover:bg-[#0a2459] transition-colors"
+          >
+            Close
+          </button>
+        </div>
       </div>
     </div>
   );
 }
-
 export default function MembershipForm() {
   const [submitted, setSubmitted] = useState(false);
   const [appId, setAppId] = useState("");
@@ -100,88 +147,94 @@ export default function MembershipForm() {
     }
   };
 
-  const onSubmit = async (data: MembershipFormData) => {
-    try {
-      const submissionData = {
-        ...data,
-        // Make sure the currently selected district is always included,
-        // unless membership type is STATE (which doesn't need one).
-        district: data.membershipType === "STATE" ? "" : (districtValue || data.district),
-        applicationId: generatedAppId,
-      };
+ const onSubmit = async (data: MembershipFormData) => {
+  try {
+    const submissionData = {
+      ...data,
+      district: data.membershipType === "STATE" ? "" : (districtValue || data.district),
+      applicationId: generatedAppId,
+    };
 
-      const response = await axios.post(
-         `${process.env.NEXT_PUBLIC_API_URL}/api/members`,
-        submissionData
-      );
+    const response = await axios.post(
+       `${process.env.NEXT_PUBLIC_API_URL}/api/members`,
+      submissionData
+    );
 
-      setSubmittedData(submissionData);
-      setAppId(response.data.memberId || response.data.applicationId || generatedAppId);
-      setSubmitted(true);
-    } catch (error: any) {
-      console.error(error);
-      const message = error?.response?.data?.error || "Failed to submit application. Please try again.";
-      setToast({ message });
-      setTimeout(() => setToast(null), 4000);
-    }
-  };
+    setSubmittedData(submissionData);
+    setAppId(response.data.memberId || response.data.applicationId || generatedAppId);
+    setSubmitted(true);
+  } catch (error: any) {
+    console.error(error);
+    const errorData = error?.response?.data;
+    setToast({
+      message: errorData?.error || "Failed to submit application. Please try again.",
+      existingApplicationId: errorData?.existingApplicationId,
+      existingStatus: errorData?.existingStatus,
+    });
+  }
+};
   const inp = (hasError?: boolean) =>
-    `w-full rounded-xl border bg-white px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-slate-800 shadow-sm transition-all placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#d4af37]/35 ${
+    `w-full rounded-xl border bg-white px-3 sm:px-4 lg:px-4.5 py-2.5 sm:py-3 lg:py-3 text-xs sm:text-sm lg:text-[15px] text-slate-800 shadow-sm transition-all placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#d4af37]/35 ${
       hasError
         ? "border-red-400 bg-red-50"
         : "border-slate-200 focus:border-[#b8860b]"
     }`;
-
- if (submitted) {
+if (submitted) {
   return (
     <div className="flex items-center justify-center min-h-[500px] p-4">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-2xl lg:max-w-3xl">
         <div className="bg-white rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.12)] overflow-hidden">
           <div className="h-1.5 bg-gradient-to-r from-green-400 via-emerald-300 to-green-500" />
-          <div className="p-8 text-center">
 
-            {/* Success Icon */}
-            <div className="relative inline-flex mb-5">
-              <div className="w-20 h-20 rounded-full border-4 border-dashed border-green-300 flex items-center justify-center">
-                <div className="w-14 h-14 rounded-full bg-green-50 flex items-center justify-center">
-                  <CheckCircle size={32} className="text-green-500" strokeWidth={2} />
+          <div className="p-5 sm:p-7 lg:p-8">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 lg:gap-6 mb-5 sm:mb-6 lg:mb-6">
+              {/* Success Icon */}
+              <div className="relative flex-shrink-0">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 lg:w-18 lg:h-18 rounded-full border-4 border-dashed border-green-300 flex items-center justify-center">
+                  <div className="w-9 h-9 sm:w-11 sm:h-11 lg:w-12 lg:h-12 rounded-full bg-green-50 flex items-center justify-center">
+                    <CheckCircle size={22} className="sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-green-500" strokeWidth={2} />
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-center sm:text-left flex-1">
+                <h2 className="text-xl sm:text-2xl lg:text-2xl font-bold text-gray-800 mb-1">Success!</h2>
+                <p className="text-gray-400 text-xs sm:text-sm lg:text-base">
+                  Your application has been submitted. We're sending you a confirmation email.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-4 mb-5 sm:mb-6 lg:mb-6">
+              {/* Application ID */}
+              <div className="bg-gradient-to-br from-[#06183d] to-[#1a237e] rounded-2xl p-4 sm:p-5 lg:p-5 flex flex-col justify-center">
+                <p className="text-blue-300 text-[10px] sm:text-xs lg:text-xs uppercase tracking-widest mb-1.5">Application ID</p>
+                <p className="text-white font-mono font-bold text-lg sm:text-xl lg:text-xl tracking-wider break-all">{appId}</p>
+              </div>
+
+              {/* Submitted Details */}
+              <div className="bg-[#fbfaf7] rounded-2xl p-4 sm:p-5 lg:p-5">
+                <p className="text-[10px] sm:text-xs lg:text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Submitted Details</p>
+                <div className="space-y-1.5 lg:space-y-1.5">
+                  {[
+                    ['Name', submittedData?.fullName],
+                    ['Phone', submittedData?.phone],
+                    ['District', submittedData?.district || '-'],
+                    ['Zone', submittedData?.zone],
+                    ['Membership', submittedData?.membershipType],
+                  ].map(([label, value]) => (
+                    <div key={label} className="flex items-center justify-between text-xs sm:text-sm lg:text-[15px]">
+                      <span className="text-gray-400">{label}</span>
+                      <span className="font-semibold text-gray-700 text-right ml-2 truncate max-w-[60%]">{value || '-'}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
 
-            <h2 className="text-2xl font-bold text-gray-800 mb-1">Success!</h2>
-            <p className="text-gray-400 text-sm mb-6">
-              Your application has been submitted.<br />
-              We're sending you a confirmation email.
-            </p>
-
-            {/* Application ID */}
-            <div className="bg-gradient-to-br from-[#06183d] to-[#1a237e] rounded-2xl p-5 mb-6 shadow-lg">
-              <p className="text-blue-300 text-xs uppercase tracking-widest mb-2">Application ID</p>
-              <p className="text-white font-mono font-bold text-xl tracking-wider">{appId}</p>
-            </div>
-
-            {/* Submitted Details */}
-            <div className="text-left space-y-1 mb-6">
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Submitted Details</p>
-              {[
-                ['Name', submittedData?.fullName],
-                ['Phone', submittedData?.phone],
-                ['Email', submittedData?.email],
-                ['District', submittedData?.district || '-'],
-                ['Zone', submittedData?.zone],
-                ['Membership', submittedData?.membershipType],
-              ].map(([label, value]) => (
-                <div key={label} className="flex items-center justify-between py-2 border-b border-gray-50">
-                  <span className="text-xs text-gray-400">{label}</span>
-                  <span className="text-xs font-semibold text-gray-700">{value || '-'}</span>
-                </div>
-              ))}
-            </div>
-
             {/* Note */}
-            <div className="bg-amber-50 border border-amber-100 rounded-xl px-4 py-3">
-              <p className="text-amber-700 text-xs leading-relaxed">
+            <div className="bg-amber-50 border border-amber-100 rounded-xl px-4 py-3 lg:px-4 lg:py-3">
+              <p className="text-amber-700 text-xs sm:text-sm lg:text-[15px] leading-relaxed">
                 Our team will review your application within <strong>7 working days</strong>.
               </p>
             </div>
@@ -194,87 +247,88 @@ export default function MembershipForm() {
 
  return (
     <>
-      <Toast toast={toast} />
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 sm:space-y-8">
+      <DuplicateApplicationCard toast={toast} onClose={() => setToast(null)} />
+      <div className="lg:max-w-4xl lg:mx-auto">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 sm:space-y-8 lg:space-y-6">
         {/* Application ID Display */}
-      <div className="flex flex-col gap-3 sm:gap-4 rounded-2xl border border-[#d4af37]/40 bg-[#fff9e8] p-3 sm:p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 sm:gap-4 lg:gap-3 rounded-2xl border border-[#d4af37]/40 bg-[#fff9e8] p-3 sm:p-4 lg:p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-xs sm:text-sm font-bold text-[#06183d]">Application ID</p>
-          <p className="text-[10px] sm:text-xs text-[#8b6b1f]">This ID will be assigned to your application</p>
+          <p className="text-xs sm:text-sm lg:text-[15px] font-bold text-[#06183d]">Application ID</p>
+          <p className="text-[10px] sm:text-xs lg:text-xs text-[#8b6b1f]">This ID will be assigned to your application</p>
         </div>
-        <div className="rounded-xl border border-[#d4af37]/50 bg-white px-3 sm:px-4 py-1.5 sm:py-2">
-          <span className="font-mono font-bold text-[#06183d] text-sm sm:text-base">{generatedAppId || "Loading..."}</span>
+        <div className="rounded-xl border border-[#d4af37]/50 bg-white px-3 sm:px-4 lg:px-4 py-1.5 sm:py-2 lg:py-2">
+          <span className="font-mono font-bold text-[#06183d] text-sm sm:text-base lg:text-[15px]">{generatedAppId || "Loading..."}</span>
         </div>
       </div>
 
       {/* Personal Details */}
       <div>
-        <h3 className="mb-4 sm:mb-5 border-b border-[#d4af37]/40 pb-2 sm:pb-3 text-base sm:text-lg font-bold text-[#06183d]">
+        <h3 className="mb-4 sm:mb-5 lg:mb-4 border-b border-[#d4af37]/40 pb-2 sm:pb-3 lg:pb-2.5 text-base sm:text-lg lg:text-[18px] font-bold text-[#06183d]">
           Personal Details
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-3.5">
           <div>
-            <label className="mb-1 block text-xs sm:text-sm font-semibold text-slate-700">Full Name *</label>
+            <label className="mb-1 block text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-700">Full Name *</label>
             <input {...register("fullName", { required: true })} className={inp(!!errors.fullName)} placeholder="Enter your full name" />
-            {errors.fullName && <p className="text-red-500 text-[10px] sm:text-xs mt-1">Full name is required</p>}
+            {errors.fullName && <p className="text-red-500 text-[10px] sm:text-xs lg:text-xs mt-1">Full name is required</p>}
           </div>
           <div>
-            <label className="mb-1 block text-xs sm:text-sm font-semibold text-slate-700">Date of Birth *</label>
+            <label className="mb-1 block text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-700">Date of Birth *</label>
             <input type="date" {...register("dateOfBirth", { required: true })} className={inp(!!errors.dateOfBirth)} />
-            {errors.dateOfBirth && <p className="text-red-500 text-[10px] sm:text-xs mt-1">Date of birth is required</p>}
+            {errors.dateOfBirth && <p className="text-red-500 text-[10px] sm:text-xs lg:text-xs mt-1">Date of birth is required</p>}
           </div>
           <div>
-            <label className="mb-1 block text-xs sm:text-sm font-semibold text-slate-700">Father's Name *</label>
+            <label className="mb-1 block text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-700">Father's Name *</label>
             <input {...register("fatherName", { required: true })} className={inp(!!errors.fatherName)} placeholder="Father's full name" />
-            {errors.fatherName && <p className="text-red-500 text-[10px] sm:text-xs mt-1">Father's name is required</p>}
+            {errors.fatherName && <p className="text-red-500 text-[10px] sm:text-xs lg:text-xs mt-1">Father's name is required</p>}
           </div>
           <div>
-            <label className="mb-1 block text-xs sm:text-sm font-semibold text-slate-700">Guardian's Name</label>
+            <label className="mb-1 block text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-700">Guardian's Name</label>
             <input {...register("guardianName")} className={inp()} placeholder="Guardian's name (if applicable)" />
           </div>
           <div>
-            <label className="mb-1 block text-xs sm:text-sm font-semibold text-slate-700">Gender *</label>
+            <label className="mb-1 block text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-700">Gender *</label>
             <select {...register("gender", { required: true })} className={inp(!!errors.gender)}>
               <option value="">Select gender</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
               <option value="Other">Other</option>
             </select>
-            {errors.gender && <p className="text-red-500 text-[10px] sm:text-xs mt-1">Gender is required</p>}
+            {errors.gender && <p className="text-red-500 text-[10px] sm:text-xs lg:text-xs mt-1">Gender is required</p>}
           </div>
           <div>
-            <label className="mb-1 block text-xs sm:text-sm font-semibold text-slate-700">Nationality *</label>
+            <label className="mb-1 block text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-700">Nationality *</label>
             <input {...register("nationality", { required: true })} defaultValue="Indian" className={inp(!!errors.nationality)} placeholder="Your nationality" />
-            {errors.nationality && <p className="text-red-500 text-[10px] sm:text-xs mt-1">Nationality is required</p>}
+            {errors.nationality && <p className="text-red-500 text-[10px] sm:text-xs lg:text-xs mt-1">Nationality is required</p>}
           </div>
         </div>
       </div>
 
       {/* Address */}
       <div>
-        <h3 className="mb-4 sm:mb-5 border-b border-[#d4af37]/40 pb-2 sm:pb-3 text-base sm:text-lg font-bold text-[#06183d]">
+        <h3 className="mb-4 sm:mb-5 lg:mb-4 border-b border-[#d4af37]/40 pb-2 sm:pb-3 lg:pb-2.5 text-base sm:text-lg lg:text-[18px] font-bold text-[#06183d]">
           Address
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-3.5">
           <div>
-            <label className="mb-1 block text-xs sm:text-sm font-semibold text-slate-700">Door No. *</label>
+            <label className="mb-1 block text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-700">Door No. *</label>
             <input {...register("doorNo", { required: true })} className={inp(!!errors.doorNo)} placeholder="Door / Flat No." />
-            {errors.doorNo && <p className="text-red-500 text-[10px] sm:text-xs mt-1">Door number is required</p>}
+            {errors.doorNo && <p className="text-red-500 text-[10px] sm:text-xs lg:text-xs mt-1">Door number is required</p>}
           </div>
           <div>
-            <label className="mb-1 block text-xs sm:text-sm font-semibold text-slate-700">Street / Area *</label>
+            <label className="mb-1 block text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-700">Street / Area *</label>
             <input {...register("street", { required: true })} className={inp(!!errors.street)} placeholder="Street name" />
-            {errors.street && <p className="text-red-500 text-[10px] sm:text-xs mt-1">Street is required</p>}
+            {errors.street && <p className="text-red-500 text-[10px] sm:text-xs lg:text-xs mt-1">Street is required</p>}
           </div>
           <div>
-            <label className="mb-1 block text-xs sm:text-sm font-semibold text-slate-700">City / Town *</label>
+            <label className="mb-1 block text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-700">City / Town *</label>
             <input {...register("city", { required: true })} className={inp(!!errors.city)} placeholder="City or town" />
-            {errors.city && <p className="text-red-500 text-[10px] sm:text-xs mt-1">City is required</p>}
+            {errors.city && <p className="text-red-500 text-[10px] sm:text-xs lg:text-xs mt-1">City is required</p>}
           </div>
 
           {/* ===== DISTRICT FIELD — FIXED ===== */}
           <div>
-            <label className="mb-1 block text-xs sm:text-sm font-semibold text-slate-700">
+            <label className="mb-1 block text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-700">
               District {membershipType !== "STATE" && "*"}
             </label>
             <select
@@ -288,64 +342,64 @@ export default function MembershipForm() {
               {DISTRICTS.map((d) => <option key={d} value={d}>{d}</option>)}
             </select>
             {membershipType === "STATE" && (
-              <p className="text-[10px] sm:text-xs text-gray-400 mt-1">Not required for State level members</p>
+              <p className="text-[10px] sm:text-xs lg:text-xs text-gray-400 mt-1">Not required for State level members</p>
             )}
-            {errors.district && <p className="text-red-500 text-[10px] sm:text-xs mt-1">District is required</p>}
+            {errors.district && <p className="text-red-500 text-[10px] sm:text-xs lg:text-xs mt-1">District is required</p>}
           </div>
           {/* ===== END DISTRICT FIELD ===== */}
 
           <div>
-            <label className="mb-1 block text-xs sm:text-sm font-semibold text-slate-700">Zone *</label>
+            <label className="mb-1 block text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-700">Zone *</label>
             <select {...register("zone", { required: true })} className={inp(!!errors.zone)}>
               <option value="">Select zone</option>
               {ZONES.map((z) => <option key={z} value={z}>{z}</option>)}
             </select>
-            {errors.zone && <p className="text-red-500 text-[10px] sm:text-xs mt-1">Zone is required</p>}
+            {errors.zone && <p className="text-red-500 text-[10px] sm:text-xs lg:text-xs mt-1">Zone is required</p>}
           </div>
           <div>
-            <label className="mb-1 block text-xs sm:text-sm font-semibold text-slate-700">State *</label>
+            <label className="mb-1 block text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-700">State *</label>
             <input {...register("state")} defaultValue="Tamil Nadu" className={inp()} readOnly />
           </div>
           <div>
-            <label className="mb-1 block text-xs sm:text-sm font-semibold text-slate-700">Pin Code *</label>
+            <label className="mb-1 block text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-700">Pin Code *</label>
             <input {...register("pinCode", { required: true, minLength: 6, maxLength: 6 })} className={inp(!!errors.pinCode)} placeholder="6-digit pin code" maxLength={6} />
-            {errors.pinCode && <p className="text-red-500 text-[10px] sm:text-xs mt-1">Valid 6-digit pin code required</p>}
+            {errors.pinCode && <p className="text-red-500 text-[10px] sm:text-xs lg:text-xs mt-1">Valid 6-digit pin code required</p>}
           </div>
         </div>
       </div>
 
       {/* Contact Details */}
       <div>
-        <h3 className="mb-4 sm:mb-5 border-b border-[#d4af37]/40 pb-2 sm:pb-3 text-base sm:text-lg font-bold text-[#06183d]">
+        <h3 className="mb-4 sm:mb-5 lg:mb-4 border-b border-[#d4af37]/40 pb-2 sm:pb-3 lg:pb-2.5 text-base sm:text-lg lg:text-[18px] font-bold text-[#06183d]">
           Contact Details
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-3.5">
           <div>
-            <label className="mb-1 block text-xs sm:text-sm font-semibold text-slate-700">Phone Number *</label>
+            <label className="mb-1 block text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-700">Phone Number *</label>
             <input {...register("phone", { required: true, minLength: 10, maxLength: 10 })} className={inp(!!errors.phone)} placeholder="10-digit mobile number" maxLength={10} />
-            {errors.phone && <p className="text-red-500 text-[10px] sm:text-xs mt-1">Valid 10-digit phone number required</p>}
+            {errors.phone && <p className="text-red-500 text-[10px] sm:text-xs lg:text-xs mt-1">Valid 10-digit phone number required</p>}
           </div>
           <div className="sm:col-span-2">
-            <label className="mb-1 block text-xs sm:text-sm font-semibold text-slate-700">Email Address *</label>
+            <label className="mb-1 block text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-700">Email Address *</label>
             <input type="email" {...register("email", { required: true })} className={inp(!!errors.email)} placeholder="your@email.com" />
-            {errors.email && <p className="text-red-500 text-[10px] sm:text-xs mt-1">Valid email is required</p>}
+            {errors.email && <p className="text-red-500 text-[10px] sm:text-xs lg:text-xs mt-1">Valid email is required</p>}
           </div>
         </div>
       </div>
 
       {/* Identity, Education & Membership */}
       <div>
-        <h3 className="mb-4 sm:mb-5 border-b border-[#d4af37]/40 pb-2 sm:pb-3 text-base sm:text-lg font-bold text-[#06183d]">
+        <h3 className="mb-4 sm:mb-5 lg:mb-4 border-b border-[#d4af37]/40 pb-2 sm:pb-3 lg:pb-2.5 text-base sm:text-lg lg:text-[18px] font-bold text-[#06183d]">
           Identity, Education & Membership
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-3.5">
           <div>
-            <label className="mb-1 block text-xs sm:text-sm font-semibold text-slate-700">Aadhar Number *</label>
+            <label className="mb-1 block text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-700">Aadhar Number *</label>
             <input {...register("aadharNumber", { required: true, minLength: 12, maxLength: 12 })} className={inp(!!errors.aadharNumber)} placeholder="12-digit Aadhar number" maxLength={12} />
-            {errors.aadharNumber && <p className="text-red-500 text-[10px] sm:text-xs mt-1">Valid 12-digit Aadhar number required</p>}
+            {errors.aadharNumber && <p className="text-red-500 text-[10px] sm:text-xs lg:text-xs mt-1">Valid 12-digit Aadhar number required</p>}
           </div>
           <div>
-            <label className="mb-1 block text-xs sm:text-sm font-semibold text-slate-700">Educational Qualification *</label>
+            <label className="mb-1 block text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-700">Educational Qualification *</label>
             <select {...register("education", { required: true })} className={inp(!!errors.education)}>
               <option value="">Select qualification</option>
               <option value="10th Pass">10th Pass</option>
@@ -356,10 +410,10 @@ export default function MembershipForm() {
               <option value="Doctorate">Doctorate</option>
               <option value="Other">Other</option>
             </select>
-            {errors.education && <p className="text-red-500 text-[10px] sm:text-xs mt-1">Educational qualification is required</p>}
+            {errors.education && <p className="text-red-500 text-[10px] sm:text-xs lg:text-xs mt-1">Educational qualification is required</p>}
           </div>
           <div className="sm:col-span-2">
-            <label className="mb-1 block text-xs sm:text-sm font-semibold text-slate-700">
+            <label className="mb-1 block text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-700">
               Write Your Full Qualification <span className="text-gray-400 font-normal">(Optional)</span>
             </label>
             <textarea 
@@ -371,20 +425,20 @@ export default function MembershipForm() {
 - Completed M.A. in Social Work from ABC College, Coimbatore (2022)
 - Diploma in Cyber Law from ..."
             />
-            <p className="text-[10px] sm:text-xs text-gray-400 mt-1">Include degrees, diplomas, certificates, institutions, and year of completion (Optional)</p>
+            <p className="text-[10px] sm:text-xs lg:text-xs text-gray-400 mt-1">Include degrees, diplomas, certificates, institutions, and year of completion (Optional)</p>
           </div>
           <div>
-            <label className="mb-1 block text-xs sm:text-sm font-semibold text-slate-700">Membership Type *</label>
+            <label className="mb-1 block text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-700">Membership Type *</label>
             <select {...register("membershipType", { required: true })} className={inp(!!errors.membershipType)}>
               <option value="">Select membership type</option>
               <option value="DISTRICT">District Member</option>
               <option value="STATE">State Member</option>
               <option value="ZONAL">Zonal Member</option>
             </select>
-            {errors.membershipType && <p className="text-red-500 text-[10px] sm:text-xs mt-1">Please select membership type</p>}
+            {errors.membershipType && <p className="text-red-500 text-[10px] sm:text-xs lg:text-xs mt-1">Please select membership type</p>}
           </div>
           <div>
-            <label className="mb-1 block text-xs sm:text-sm font-semibold text-slate-700">Previous Membership / Organization <span className="font-normal text-slate-400">(Optional)</span></label>
+            <label className="mb-1 block text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-700">Previous Membership / Organization <span className="font-normal text-slate-400">(Optional)</span></label>
             <input {...register("previousMembership")} className={inp()} placeholder="Any previous NGO or organization membership" />
           </div>
         </div>
@@ -392,10 +446,10 @@ export default function MembershipForm() {
 
       {/* Photo Upload */}
       <div>
-        <h3 className="mb-4 sm:mb-5 border-b border-[#d4af37]/40 pb-2 sm:pb-3 text-base sm:text-lg font-bold text-[#06183d]">
+        <h3 className="mb-4 sm:mb-5 lg:mb-4 border-b border-[#d4af37]/40 pb-2 sm:pb-3 lg:pb-2.5 text-base sm:text-lg lg:text-[18px] font-bold text-[#06183d]">
           Passport Size Photo
         </h3>
-        <div className="space-y-3 sm:space-y-4">
+        <div className="space-y-3 sm:space-y-4 lg:space-y-3.5">
           <input
             type="file"
             accept="image/*"
@@ -406,26 +460,26 @@ export default function MembershipForm() {
           <button
             type="button"
             onClick={() => photoInputRef.current?.click()}
-            className="inline-flex items-center gap-2 rounded-full border border-[#d4af37]/40 bg-[#fff9e8] px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-[#06183d] transition-all hover:border-[#b8860b] hover:bg-[#fff3c4]"
+            className="inline-flex items-center gap-2 rounded-full border border-[#d4af37]/40 bg-[#fff9e8] px-4 sm:px-5 lg:px-4.5 py-2 sm:py-2.5 lg:py-2.5 text-xs sm:text-sm lg:text-[15px] font-bold text-[#06183d] transition-all hover:border-[#b8860b] hover:bg-[#fff3c4]"
           >
-            <Upload size={16} /> Upload Photo
+            <Upload size={16} className="sm:w-5 sm:h-5 lg:w-5 lg:h-5" /> Upload Photo
           </button>
           {photoPreview && (
-            <div className="mt-2 sm:mt-3">
-              <img src={photoPreview} alt="Preview" className="h-24 sm:h-28 md:h-32 w-24 sm:w-28 md:w-32 rounded-2xl border border-[#d4af37]/40 object-cover shadow-sm" />
-              <p className="mt-1 sm:mt-2 text-[10px] sm:text-xs text-slate-500">Photo preview</p>
+            <div className="mt-2 sm:mt-3 lg:mt-3">
+              <img src={photoPreview} alt="Preview" className="h-24 sm:h-28 lg:h-32 w-24 sm:w-28 lg:w-32 rounded-2xl border border-[#d4af37]/40 object-cover shadow-sm" />
+              <p className="mt-1 sm:mt-2 text-[10px] sm:text-xs lg:text-xs text-slate-500">Photo preview</p>
             </div>
           )}
-          <p className="text-[10px] sm:text-xs text-gray-500">Please upload a recent passport-size photograph (JPG or PNG, max 2MB)</p>
+          <p className="text-[10px] sm:text-xs lg:text-xs text-gray-500">Please upload a recent passport-size photograph (JPG or PNG, max 2MB)</p>
         </div>
       </div>
 
       {/* Signature Upload */}
       <div>
-        <h3 className="mb-4 sm:mb-5 border-b border-[#d4af37]/40 pb-2 sm:pb-3 text-base sm:text-lg font-bold text-[#06183d]">
+        <h3 className="mb-4 sm:mb-5 lg:mb-4 border-b border-[#d4af37]/40 pb-2 sm:pb-3 lg:pb-2.5 text-base sm:text-lg lg:text-[18px] font-bold text-[#06183d]">
           Member Signature
         </h3>
-        <div className="space-y-3 sm:space-y-4">
+        <div className="space-y-3 sm:space-y-4 lg:space-y-3.5">
           <input
             type="file"
             accept="image/*"
@@ -436,30 +490,30 @@ export default function MembershipForm() {
           <button
             type="button"
             onClick={() => signatureInputRef.current?.click()}
-            className="inline-flex items-center gap-2 rounded-full border border-[#d4af37]/40 bg-[#fff9e8] px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-[#06183d] transition-all hover:border-[#b8860b] hover:bg-[#fff3c4]"
+            className="inline-flex items-center gap-2 rounded-full border border-[#d4af37]/40 bg-[#fff9e8] px-4 sm:px-5 lg:px-4.5 py-2 sm:py-2.5 lg:py-2.5 text-xs sm:text-sm lg:text-[15px] font-bold text-[#06183d] transition-all hover:border-[#b8860b] hover:bg-[#fff3c4]"
           >
-            <Camera size={16} /> Upload Signature
+            <Camera size={16} className="sm:w-5 sm:h-5 lg:w-5 lg:h-5" /> Upload Signature
           </button>
           {signaturePreview && (
-            <div className="mt-2 sm:mt-3">
-              <img src={signaturePreview} alt="Signature Preview" className="h-16 sm:h-20 md:h-24 w-32 sm:w-40 md:w-48 rounded-2xl border border-[#d4af37]/40 bg-white object-contain shadow-sm" />
-              <p className="mt-1 sm:mt-2 text-[10px] sm:text-xs text-slate-500">Signature preview</p>
+            <div className="mt-2 sm:mt-3 lg:mt-3">
+              <img src={signaturePreview} alt="Signature Preview" className="h-16 sm:h-20 lg:h-20 w-32 sm:w-40 lg:w-40 rounded-2xl border border-[#d4af37]/40 bg-white object-contain shadow-sm" />
+              <p className="mt-1 sm:mt-2 text-[10px] sm:text-xs lg:text-xs text-slate-500">Signature preview</p>
             </div>
           )}
-          <p className="text-[10px] sm:text-xs text-gray-500">Please sign on white paper and upload a clear image of your signature</p>
+          <p className="text-[10px] sm:text-xs lg:text-xs text-gray-500">Please sign on white paper and upload a clear image of your signature</p>
         </div>
       </div>
 
       {/* Declaration */}
-      <div className="rounded-2xl border border-[#d4af37]/35 bg-[#fbfaf7] p-3 sm:p-4 md:p-5">
-        <label className="flex items-start gap-2 sm:gap-3 cursor-pointer">
-          <input type="checkbox" {...register("declaration", { required: true })} className="mt-0.5 sm:mt-1 w-3.5 sm:w-4 h-3.5 sm:h-4 accent-[#1a237e]" />
-          <span className="text-xs sm:text-sm leading-5 sm:leading-6 text-slate-700">
+      <div className="rounded-2xl border border-[#d4af37]/35 bg-[#fbfaf7] p-3 sm:p-4 lg:p-4">
+        <label className="flex items-start gap-2 sm:gap-3 lg:gap-3 cursor-pointer">
+          <input type="checkbox" {...register("declaration", { required: true })} className="mt-0.5 sm:mt-1 w-3.5 sm:w-4 lg:w-4 h-3.5 sm:h-4 lg:h-4 accent-[#1a237e]" />
+          <span className="text-xs sm:text-sm lg:text-[15px] leading-5 sm:leading-6 lg:leading-6 text-slate-700">
             I hereby declare that all the information provided in this application is true and correct to the best of my knowledge.
             I understand that any false information may result in rejection or cancellation of my NCIO membership.
           </span>
         </label>
-        {errors.declaration && <p className="text-red-500 text-[10px] sm:text-xs mt-1.5 sm:mt-2">You must accept the declaration to proceed</p>}
+        {errors.declaration && <p className="text-red-500 text-[10px] sm:text-xs lg:text-xs mt-1.5 sm:mt-2">You must accept the declaration to proceed</p>}
       </div>
 
       {/* Hidden field for application ID */}
@@ -469,15 +523,16 @@ export default function MembershipForm() {
       <button
         type="submit"
         disabled={isSubmitting || !generatedAppId}
-        className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#06183d] via-[#0a2459] to-[#06183d] py-3.5 sm:py-4 text-base sm:text-lg font-bold text-white shadow-[0_18px_45px_rgba(4,13,38,0.20)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_22px_55px_rgba(4,13,38,0.28)] disabled:translate-y-0 disabled:opacity-60"
+        className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#06183d] via-[#0a2459] to-[#06183d] py-3.5 sm:py-4 lg:py-4 text-base sm:text-lg lg:text-[18px] font-bold text-white shadow-[0_18px_45px_rgba(4,13,38,0.20)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_22px_55px_rgba(4,13,38,0.28)] disabled:translate-y-0 disabled:opacity-60"
       >
         {isSubmitting ? (
-          <><Loader2 size={18} className="sm:w-5 sm:h-5 animate-spin" /> Submitting Application...</>
+          <><Loader2 size={18} className="sm:w-5 sm:h-5 lg:w-5 lg:h-5 animate-spin" /> Submitting Application...</>
         ) : (
           "Submit Membership Application"
         )}
      </button>
       </form>
+      </div>
     </>
   );
 }

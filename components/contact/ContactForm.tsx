@@ -1,11 +1,14 @@
 // components/contact/ContactForm.tsx
+// components/contact/ContactForm.tsx
 "use client";
 import { useState } from "react";
-import { CheckCircle, Loader2 } from "lucide-react";
+import { CheckCircle, Loader2, XCircle } from "lucide-react";
+import axios from "axios";
 
 export default function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -17,9 +20,17 @@ export default function ContactForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1000));
-    setLoading(false);
-    setSubmitted(true);
+    setError("");
+    try {
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/contact`, form);
+      setLoading(false);
+      setSubmitted(true);
+    } catch (err: any) {
+      setLoading(false);
+      setError(
+        err?.response?.data?.error || "Failed to send message. Please try again."
+      );
+    }
   };
 
   if (submitted) {
@@ -85,7 +96,7 @@ export default function ContactForm() {
           />
         </div>
 
-        <div>
+       <div>
           <textarea
             rows={3}
             required
@@ -95,6 +106,12 @@ export default function ContactForm() {
             className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border border-gray-300 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#1a237e]/40 focus:border-[#1a237e] transition-colors resize-none"
           />
         </div>
+
+        {error && (
+          <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-red-600 text-xs sm:text-sm">
+            <XCircle size={14} className="flex-shrink-0" /> {error}
+          </div>
+        )}
 
         <button
           type="submit"

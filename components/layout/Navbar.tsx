@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, type MouseEvent } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -99,13 +99,12 @@ export default function Navbar() {
     setServicesOpen(false);
   }, [pathname]);
 
-  // Instant navigation handler
-const handleNavClick = (href: string, e: any) => {
-      if (href === "#") return;
-    // Close mobile menu instantly
+  const handleNavClick = (href: string, e?: MouseEvent<HTMLAnchorElement>) => {
+    if (href === "#") return;
+
+    e?.preventDefault();
     setMobileOpen(false);
     setServicesOpen(false);
-    // Navigate instantly
     router.push(href);
   };
 

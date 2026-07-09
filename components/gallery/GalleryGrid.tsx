@@ -1,40 +1,9 @@
 "use client";
 // components/gallery/GalleryGrid.tsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, Play, ChevronLeft, ChevronRight } from "lucide-react";
 
-const PHOTOS = [
-  { id: 1, url: "/gallery/1.webp" },
-  { id: 2, url: "/gallery/2.webp" },
-  { id: 3, url: "/gallery/3.webp" },
-  { id: 4, url: "/gallery/4.webp" },
-  { id: 5, url: "/gallery/5.webp" },
-  { id: 6, url: "/gallery/6.webp" },
-  { id: 7, url: "/gallery/7.webp" },
-  { id: 8, url: "/gallery/8.webp" },
-  { id: 9, url: "/gallery/9.webp" },
-  { id: 10, url: "/gallery/10.webp" },
-  { id: 11, url: "/gallery/11.webp" },
-  { id: 12, url: "/gallery/12.webp" },
-  { id: 13, url: "/gallery/13.webp" },
-  { id: 14, url: "/gallery/14.webp" },
-  { id: 15, url: "/gallery/15.webp" },
-  { id: 16, url: "/gallery/16.webp" },
-  { id: 17, url: "/gallery/17.webp" },
-];
-
-const VIDEOS = [
-  { id: 1, url: "/gallery/video1.mp4" },
-  { id: 2, url: "/gallery/video2.mp4" },
-  { id: 3, url: "/gallery/video3.mp4" },
-];
-
-// ✅ New Updates images
-const UPDATES = [
-  { id: 1, url: "/updates/update1.webp" },
-  { id: 2, url: "/updates/update2.webp" },
-  { id: 3, url: "/updates/update3.webp" },
-];
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 type MediaItem = {
   id: number;
@@ -43,14 +12,39 @@ type MediaItem = {
 };
 
 export default function GalleryGrid() {
+  const [allItems, setAllItems] = useState<MediaItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
   const [activeTab, setActiveTab] = useState<"photos" | "videos" | "updates">("photos");
   const [currentIndex, setCurrentIndex] = useState<number>(0);
 
+  useEffect(() => {
+    const fetchGallery = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/gallery`);
+        const data = await res.json();
+
+        const mapped: MediaItem[] = data.map((item: any) => ({
+          id: item.id,
+          url: `${API_URL}${item.file_path}`,
+          type: item.type,
+        }));
+
+        setAllItems(mapped);
+      } catch (err) {
+        console.error("Failed to load gallery:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGallery();
+  }, []);
+
   const getCurrentMediaList = () => {
-    if (activeTab === "photos") return PHOTOS;
-    if (activeTab === "videos") return VIDEOS;
-    return UPDATES;
+    if (activeTab === "photos") return allItems.filter((i) => i.type === "photo");
+    if (activeTab === "videos") return allItems.filter((i) => i.type === "video");
+    return allItems.filter((i) => i.type === "update");
   };
 
   const getMediaType = (): "photo" | "video" | "update" => {
@@ -59,8 +53,8 @@ export default function GalleryGrid() {
     return "update";
   };
 
-  const handleMediaClick = (item: any, type: "photo" | "video" | "update", index: number) => {
-    setSelectedMedia({ ...item, type });
+  const handleMediaClick = (item: MediaItem, index: number) => {
+    setSelectedMedia(item);
     setCurrentIndex(index);
   };
 
@@ -69,7 +63,7 @@ export default function GalleryGrid() {
     const mediaList = getCurrentMediaList();
     const newIndex = currentIndex > 0 ? currentIndex - 1 : mediaList.length - 1;
     setCurrentIndex(newIndex);
-    setSelectedMedia({ ...mediaList[newIndex], type: getMediaType() });
+    setSelectedMedia(mediaList[newIndex]);
   };
 
   const handleNext = (e: React.MouseEvent) => {
@@ -77,7 +71,7 @@ export default function GalleryGrid() {
     const mediaList = getCurrentMediaList();
     const newIndex = currentIndex < mediaList.length - 1 ? currentIndex + 1 : 0;
     setCurrentIndex(newIndex);
-    setSelectedMedia({ ...mediaList[newIndex], type: getMediaType() });
+    setSelectedMedia(mediaList[newIndex]);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -85,11 +79,11 @@ export default function GalleryGrid() {
     if (e.key === "ArrowLeft") {
       const newIndex = currentIndex > 0 ? currentIndex - 1 : mediaList.length - 1;
       setCurrentIndex(newIndex);
-      setSelectedMedia({ ...mediaList[newIndex], type: getMediaType() });
+      setSelectedMedia(mediaList[newIndex]);
     } else if (e.key === "ArrowRight") {
       const newIndex = currentIndex < mediaList.length - 1 ? currentIndex + 1 : 0;
       setCurrentIndex(newIndex);
-      setSelectedMedia({ ...mediaList[newIndex], type: getMediaType() });
+      setSelectedMedia(mediaList[newIndex]);
     } else if (e.key === "Escape") {
       setSelectedMedia(null);
     }
@@ -101,6 +95,10 @@ export default function GalleryGrid() {
         ? "bg-[#1a237e] text-white shadow-md"
         : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
     }`;
+
+  const photos = allItems.filter((i) => i.type === "photo");
+  const videos = allItems.filter((i) => i.type === "video");
+  const updates = allItems.filter((i) => i.type === "update");
 
   return (
     <>
@@ -115,14 +113,17 @@ export default function GalleryGrid() {
             <button onClick={() => setActiveTab("videos")} className={tabClass("videos")}>
               🎬 Highlights
             </button>
-            {/* ✅ New Updates Tab */}
             <button onClick={() => setActiveTab("updates")} className={tabClass("updates")}>
               📢 Updates
             </button>
           </div>
 
+          {loading && (
+            <p className="text-center text-gray-500">Loading gallery...</p>
+          )}
+
           {/* Photos Grid */}
-          {activeTab === "photos" && (
+          {!loading && activeTab === "photos" && (
             <>
               <div className="text-center mb-6 sm:mb-8">
                 <h2 className="font-display text-xl sm:text-2xl font-bold text-[#1a237e]">
@@ -132,27 +133,31 @@ export default function GalleryGrid() {
                   Glimpses of our journey and impact
                 </p>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-                {PHOTOS.map((photo, index) => (
-                  <div
-                    key={photo.id}
-                    className="rounded-xl overflow-hidden aspect-square cursor-pointer group shadow-sm hover:shadow-lg transition-all"
-                    onClick={() => handleMediaClick(photo, "photo", index)}
-                  >
-                    <img
-                      src={photo.url}
-                      alt="Gallery"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      loading="lazy"
-                    />
-                  </div>
-                ))}
-              </div>
+              {photos.length === 0 ? (
+                <p className="text-center text-gray-400">No photos yet.</p>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+                  {photos.map((photo, index) => (
+                    <div
+                      key={photo.id}
+                      className="rounded-xl overflow-hidden aspect-square cursor-pointer group shadow-sm hover:shadow-lg transition-all"
+                      onClick={() => handleMediaClick(photo, index)}
+                    >
+                      <img
+                        src={photo.url}
+                        alt="Gallery"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
             </>
           )}
 
           {/* Videos Grid */}
-          {activeTab === "videos" && (
+          {!loading && activeTab === "videos" && (
             <>
               <div className="text-center mb-6 sm:mb-8">
                 <h2 className="font-display text-xl sm:text-2xl font-bold text-[#1a237e]">
@@ -162,36 +167,40 @@ export default function GalleryGrid() {
                   Watch our impactful moments in action
                 </p>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                {VIDEOS.map((video, index) => (
-                  <div
-                    key={video.id}
-                    className="rounded-xl overflow-hidden aspect-video cursor-pointer group shadow-sm hover:shadow-lg transition-all relative bg-gray-900"
-                    onClick={() => handleMediaClick(video, "video", index)}
-                  >
-                    <video
-                      src={video.url}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      muted
-                      playsInline
-                      preload="metadata"
-                    />
-                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#f9a825] rounded-full flex items-center justify-center">
-                        <Play size={24} className="sm:w-8 sm:h-8 text-[#1a237e] ml-1" />
+              {videos.length === 0 ? (
+                <p className="text-center text-gray-400">No videos yet.</p>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                  {videos.map((video, index) => (
+                    <div
+                      key={video.id}
+                      className="rounded-xl overflow-hidden aspect-video cursor-pointer group shadow-sm hover:shadow-lg transition-all relative bg-gray-900"
+                      onClick={() => handleMediaClick(video, index)}
+                    >
+                      <video
+                        src={video.url}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        muted
+                        playsInline
+                        preload="metadata"
+                      />
+                      <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                        <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#f9a825] rounded-full flex items-center justify-center">
+                          <Play size={24} className="sm:w-8 sm:h-8 text-[#1a237e] ml-1" />
+                        </div>
+                      </div>
+                      <div className="absolute top-2 right-2 bg-black/60 rounded-full px-2 py-1 text-[10px] sm:text-xs text-white flex items-center gap-1">
+                        <Play size={10} /> Video
                       </div>
                     </div>
-                    <div className="absolute top-2 right-2 bg-black/60 rounded-full px-2 py-1 text-[10px] sm:text-xs text-white flex items-center gap-1">
-                      <Play size={10} /> Video
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </>
           )}
 
-          {/* ✅ Updates Grid */}
-          {activeTab === "updates" && (
+          {/* Updates Grid */}
+          {!loading && activeTab === "updates" && (
             <>
               <div className="text-center mb-6 sm:mb-8">
                 <h2 className="font-display text-xl sm:text-2xl font-bold text-[#1a237e]">
@@ -201,22 +210,26 @@ export default function GalleryGrid() {
                   Stay informed with our recent news & announcements
                 </p>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-                {UPDATES.map((update, index) => (
-                  <div
-                    key={update.id}
-                    className="rounded-xl overflow-hidden aspect-square cursor-pointer group shadow-sm hover:shadow-lg transition-all"
-                    onClick={() => handleMediaClick(update, "update", index)}
-                  >
-                    <img
-                      src={update.url}
-                      alt="Update"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      loading="lazy"
-                    />
-                  </div>
-                ))}
-              </div>
+              {updates.length === 0 ? (
+                <p className="text-center text-gray-400">No updates yet.</p>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+                  {updates.map((update, index) => (
+                    <div
+                      key={update.id}
+                      className="rounded-xl overflow-hidden aspect-square cursor-pointer group shadow-sm hover:shadow-lg transition-all"
+                      onClick={() => handleMediaClick(update, index)}
+                    >
+                      <img
+                        src={update.url}
+                        alt="Update"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
             </>
           )}
 
@@ -231,7 +244,6 @@ export default function GalleryGrid() {
           onKeyDown={handleKeyDown}
           tabIndex={0}
         >
-          {/* Close Button */}
           <button
             className="absolute top-3 sm:top-5 right-3 sm:right-5 text-white hover:text-[#f9a825] transition-colors z-20"
             onClick={() => setSelectedMedia(null)}
@@ -239,7 +251,6 @@ export default function GalleryGrid() {
             <X size={28} className="sm:w-8 sm:h-8" />
           </button>
 
-          {/* Previous Button */}
           <button
             className="absolute left-2 sm:left-4 md:left-8 text-white hover:text-[#f9a825] transition-colors z-20 bg-black/50 hover:bg-black/70 rounded-full p-1 sm:p-2"
             onClick={handlePrevious}
@@ -247,7 +258,6 @@ export default function GalleryGrid() {
             <ChevronLeft size={28} className="sm:w-8 sm:h-8 md:w-10 md:h-10" />
           </button>
 
-          {/* Next Button */}
           <button
             className="absolute right-2 sm:right-4 md:right-8 text-white hover:text-[#f9a825] transition-colors z-20 bg-black/50 hover:bg-black/70 rounded-full p-1 sm:p-2"
             onClick={handleNext}
@@ -255,7 +265,6 @@ export default function GalleryGrid() {
             <ChevronRight size={28} className="sm:w-8 sm:h-8 md:w-10 md:h-10" />
           </button>
 
-          {/* Media Display */}
           <div
             onClick={(e) => e.stopPropagation()}
             className="max-w-5xl w-full px-4 sm:px-0"
@@ -270,7 +279,6 @@ export default function GalleryGrid() {
                 Your browser does not support the video tag.
               </video>
             ) : (
-              // photo & update — both show as image
               <img
                 src={selectedMedia.url}
                 alt="Media"
@@ -278,7 +286,6 @@ export default function GalleryGrid() {
               />
             )}
 
-            {/* Counter */}
             <div className="text-center mt-3 sm:mt-4 text-white/70 text-xs sm:text-sm">
               {currentIndex + 1} / {getCurrentMediaList().length}
             </div>

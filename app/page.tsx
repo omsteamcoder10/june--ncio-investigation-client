@@ -1,4 +1,5 @@
-
+import type { Metadata } from 'next';
+import { getSeoMeta } from '@/lib/getSeoMeta';
 import FloatingButtons   from "@/components/layout/FloatingButtons";
 import HeroSection       from "@/components/home/HeroSection";
 import ServicesGrid      from "@/components/home/ServicesGrid";
@@ -9,26 +10,23 @@ import HomeShowcaseSections from "@/components/home/HomeShowcaseSections";
 import MembershipCTA     from "@/components/home/MembershipCTA";
 import GalleryPreview    from "@/components/home/GalleryPreview";
 import DonateCTA         from "@/components/home/DonateCTA";
-import { Metadata } from 'next';
+
+export async function generateMetadata(): Promise<Metadata> {
+  return getSeoMeta('/', 'NCIO — National Crime Investigates Organization');
+}
 
 export default function HomePage() {
   return (
     <>
-      
       <HeroSection />
       <AboutPreview />
       <PremiumHighlights />
-   
       <ServicesGrid />
       <HomeShowcaseSections />
       <MissionBanner />
-      
-     
       <MembershipCTA />
-     
       <GalleryPreview />
       <DonateCTA />
-      
       <FloatingButtons />
     </>
   );

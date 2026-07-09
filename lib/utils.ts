@@ -41,27 +41,20 @@ export function isBirthdayThisMonth(dateOfBirth: string): boolean {
 }
 
 export function generateApplicationId(latestId?: string): string {
-  // If latestId is provided, increment it
-  if (latestId) {
-    // Extract the prefix (letters) and number from the latest ID
-    // Supports formats like "NCIO0000", "NCIO1234", etc.
-    const prefix = latestId.match(/^[A-Z]+/)?.[0] || "NCIO";
-    const numberMatch = latestId.match(/\d+$/);
-    let nextNumber = 1;
-    
+  const now = new Date();
+  const currentPeriod = String(now.getFullYear()).slice(-2) + String(now.getMonth() + 1).padStart(2, '0');
+  const prefix = `NCIO-${currentPeriod}-`;
+  let nextNumber = 1;
+
+  if (latestId?.startsWith(prefix)) {
+    const numberMatch = latestId.match(/-(\d{4})$/);
+
     if (numberMatch) {
-      nextNumber = parseInt(numberMatch[0]) + 1;
+      nextNumber = parseInt(numberMatch[1], 10) + 1;
     }
-    
-    const paddedNumber = String(nextNumber).padStart(4, '0');
-    return `${prefix}${paddedNumber}`;
   }
-  
-  // Fallback to random generation if no latestId provided (backward compatibility)
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  const part1 = Array.from({ length: 4 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
-  const part2 = Array.from({ length: 4 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
-  return `NCIO-APP-${part1}-${part2}`;
+
+  return `${prefix}${String(nextNumber).padStart(4, '0')}`;
 }
 
 export function truncate(str: string, n: number): string {

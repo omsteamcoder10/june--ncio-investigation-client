@@ -21,39 +21,39 @@ const JOIN_CARDS = [
 
 export default function WhyJoin() {
   return (
-    <section className="relative overflow-hidden bg-[#f8f5ee] py-12 sm:py-16 md:py-20">
-      <div className="absolute right-0 top-0 h-48 sm:h-72 w-48 sm:w-72 bg-[#d4af37]/20 blur-3xl" />
+    <section className="relative overflow-hidden bg-[#f8f5ee] py-12 sm:py-16 md:py-20 lg:py-24">
+      <div className="absolute right-0 top-0 h-48 sm:h-72 md:h-96 w-48 sm:w-72 md:w-96 bg-[#d4af37]/20 blur-3xl" />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto mb-8 sm:mb-10 md:mb-12 max-w-3xl text-center">
-          <span className="inline-flex rounded-full border border-[#d4af37]/50 bg-white px-4 sm:px-5 py-1.5 sm:py-2 text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] sm:tracking-[0.24em] text-[#9a7319] shadow-sm">
+        <div className="mx-auto mb-8 sm:mb-10 md:mb-12 lg:mb-16 max-w-3xl text-center">
+          <span className="inline-flex rounded-full border border-[#d4af37]/50 bg-white px-4 sm:px-5 md:px-6 py-1.5 sm:py-2 md:py-2.5 text-[10px] sm:text-xs md:text-sm font-bold uppercase tracking-[0.2em] sm:tracking-[0.24em] md:tracking-[0.28em] text-[#9a7319] shadow-sm">
             Join NCIO
           </span>
-          <h2 className="mt-3 sm:mt-4 font-display text-3xl sm:text-4xl md:text-5xl font-bold text-[#06183d]">
+          <h2 className="mt-3 sm:mt-4 md:mt-5 font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#06183d]">
             Why Join NCIO?
           </h2>
-          <p className="mt-3 sm:mt-4 text-sm sm:text-base leading-6 sm:leading-7 text-slate-600 px-2">
+          <p className="mt-3 sm:mt-4 md:mt-5 text-sm sm:text-base md:text-lg leading-6 sm:leading-7 md:leading-8 text-slate-600 px-2">
             Become part of a disciplined public-service network with identity,
             support, and purpose.
           </p>
         </div>
 
-        <div className="grid gap-4 sm:gap-5 md:gap-6 md:grid-cols-3">
+        <div className="grid gap-4 sm:gap-5 md:gap-6 lg:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {JOIN_CARDS.map((card) => {
             const Icon = card.icon;
 
             return (
               <div
                 key={card.title}
-                className="group relative overflow-hidden rounded-[1.35rem] border border-[#d4af37]/35 bg-white p-5 sm:p-6 md:p-7 text-center shadow-[0_18px_45px_rgba(4,13,38,0.08)] transition-all duration-300 hover:-translate-y-1 hover:border-[#d4af37]/70"
+                className="group relative overflow-hidden rounded-[1.35rem] border border-[#d4af37]/35 bg-white p-5 sm:p-6 md:p-7 lg:p-8 text-center shadow-[0_18px_45px_rgba(4,13,38,0.08)] transition-all duration-300 hover:-translate-y-1 hover:border-[#d4af37]/70"
               >
                 <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#8b6b1f] via-[#fff2ad] to-[#8b6b1f]" />
-                <div className="mx-auto mb-4 sm:mb-5 flex h-14 sm:h-16 w-14 sm:w-16 items-center justify-center rounded-2xl bg-[#06183d] text-[#f8e287] shadow-lg shadow-[#06183d]/15 transition-transform duration-300 group-hover:scale-105">
-                  <Icon size={26} className="sm:w-7 sm:h-7 md:w-8 md:h-8" />
+                <div className="mx-auto mb-4 sm:mb-5 md:mb-6 flex h-14 sm:h-16 md:h-20 w-14 sm:w-16 md:w-20 items-center justify-center rounded-2xl bg-[#06183d] text-[#f8e287] shadow-lg shadow-[#06183d]/15 transition-transform duration-300 group-hover:scale-105">
+                  <Icon size={26} className="sm:w-7 sm:h-7 md:w-9 md:h-9 lg:w-10 lg:h-10" />
                 </div>
-                <h3 className="text-lg sm:text-xl font-bold text-[#06183d]">
+                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#06183d]">
                   {card.title}
                 </h3>
-                <p className="mt-2 sm:mt-3 text-xs sm:text-sm leading-6 sm:leading-7 text-slate-600">
+                <p className="mt-2 sm:mt-3 md:mt-4 text-xs sm:text-sm md:text-base leading-6 sm:leading-7 md:leading-8 text-slate-600">
                   {card.desc}
                 </p>
               </div>

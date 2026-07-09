@@ -4,7 +4,11 @@ import PageBanner     from "@/components/shared/PageBanner";
 import WhyJoin        from "@/components/membership/WhyJoin";
 import MembershipForm from "@/components/membership/MembershipForm";
 import MemberBenefits from "@/components/membership/MemberBenefits";
+import { getSeoMeta } from "@/lib/getSeoMeta";
 
+export async function generateMetadata() {
+  return getSeoMeta('/membership', 'Membership - NCIO');
+}
 export default function MembershipPage() {
   return (
     <>

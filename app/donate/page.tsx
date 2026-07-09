@@ -3,6 +3,13 @@ import DonateInfo from "@/components/donate/DonateInfo";
 import DonationImpact from "@/components/donate/DonationImpact";
 import FloatingButtons from "@/components/layout/FloatingButtons";
 import DonateButton from "@/components/donate/DonateButton";
+import { getSeoMeta } from "@/lib/getSeoMeta";
+
+
+export async function generateMetadata() {
+  return getSeoMeta('/donate', 'Donate - NCIO');
+}
+
 
 export default function DonatePage() {
   return (
