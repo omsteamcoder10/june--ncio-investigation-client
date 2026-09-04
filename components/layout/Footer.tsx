@@ -20,7 +20,7 @@ export default function Footer() {
               <div className="relative w-12 h-12 xs:w-14 xs:h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 transition-all duration-500 group-hover:scale-105 flex-shrink-0">
                 <div className="absolute inset-0 bg-gradient-to-r from-amber-300/30 to-yellow-300/30 rounded-full blur-2xl group-hover:blur-3xl transition-all duration-700"></div>
                 <Image
-                  src="/logo/1.png"
+                  src={`${process.env.NEXT_PUBLIC_R2_URL}/logo/1.png`}
                   alt="NCIO Logo"
                   fill
                   className="object-contain drop-shadow-2xl relative z-10"

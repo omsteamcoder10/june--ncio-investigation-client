@@ -28,7 +28,7 @@ const IMPACT_AREAS = [
     title: "Awareness Campaigns",
     text: "Community programs that help people understand rights, safety, social responsibility, and public welfare.",
     icon: Megaphone,
-    image: "/about/why5.webp",
+    image: `${process.env.NEXT_PUBLIC_R2_URL}/about/why5.webp`,
     href: "/gallery",
   },
 ];

@@ -12,7 +12,7 @@ const DEFAULT_HERO = {
     "Dedicated to serving society through legal aid, RTI services, blood donation drives, medical camps, awareness programs and community support initiatives.",
   button_text: "Contact Us",
   button_link: "/contact",
-  image: "/home/4.png",
+  image: `${process.env.NEXT_PUBLIC_R2_URL}/home/4.png`,
   image_alt: "NCIO Team",
 };
 

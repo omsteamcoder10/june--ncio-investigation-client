@@ -53,7 +53,7 @@ export default function DonateInfo() {
       <div className="mt-5 sm:mt-6 flex flex-col items-center">
         <div className="border-4 border-red-500 p-1.5 sm:p-2 rounded-lg bg-white">
           <Image
-            src="/donate/qrcode.png"
+            src={`${process.env.NEXT_PUBLIC_R2_URL}/donate/qrcode.png`}
             alt="Donation QR Code"
             width={180}
             height={180}
@@ -70,7 +70,7 @@ export default function DonateInfo() {
         </h4>
         <div className="flex justify-center">
           <Image
-            src="/donate/qr-scan.png"
+            src={`${process.env.NEXT_PUBLIC_R2_URL}/donate/qr-scan.png`}
             alt="Accepted Payment Methods"
             width={300}
             height={60}

@@ -56,7 +56,7 @@ export default function DonateButton() {
       currency: "INR",
       name: "NCIO",
       description: "Donation to NCIO",
-      image: "/logo/1.png",
+      image: `${process.env.NEXT_PUBLIC_R2_URL}/logo/1.png`,
       handler: async function (response: any) {
         try {
           await fetch('/api/donations', {

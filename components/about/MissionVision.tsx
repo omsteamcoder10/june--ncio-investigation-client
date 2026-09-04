@@ -43,7 +43,7 @@ export default function MissionVision() {
           <div className="relative flex justify-center lg:justify-end order-1 lg:order-2">
             <div className="w-full max-w-[240px] xs:max-w-[260px] sm:max-w-[280px] md:max-w-sm lg:max-w-sm xl:max-w-md rounded-[2rem] overflow-hidden shadow-2xl aspect-[3/4] relative transition-transform hover:-translate-y-2 duration-500 mx-auto lg:mx-0">
               <img 
-                src="/home/3.webp" 
+                src={`${process.env.NEXT_PUBLIC_R2_URL}/home/3.webp`} 
                 alt="Founder" 
                 className="w-full h-full object-cover brightness-[1.2] contrast-[1.05] saturate-[1.1]"
                 style={{

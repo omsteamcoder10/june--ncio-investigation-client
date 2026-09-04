@@ -17,7 +17,7 @@ const DEFAULT_ABOUT_PREVIEW = {
   ],
   button_text: "Read Full Mission",
   button_link: "/about",
-  image: "/home/1.webp",
+  image: `${process.env.NEXT_PUBLIC_R2_URL}/home/1.webp`,
   image_alt: "NCIO volunteers at work",
 };
 

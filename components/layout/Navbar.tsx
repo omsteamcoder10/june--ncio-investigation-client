@@ -149,7 +149,7 @@ export default function Navbar() {
             <div className="relative w-8 h-8 xs:w-10 xs:h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 xl:w-20 xl:h-20 transition-all duration-500 group-hover:scale-105">
               <div className="absolute inset-0 bg-gradient-to-r from-amber-300/30 to-yellow-300/30 rounded-full blur-2xl group-hover:blur-3xl transition-all duration-700"></div>
               <Image
-                src="/logo/1.png"
+                src={`${process.env.NEXT_PUBLIC_R2_URL}/logo/1.png`}
                 alt="NCIO Logo"
                 fill
                 className="object-contain drop-shadow-2xl relative z-10"
