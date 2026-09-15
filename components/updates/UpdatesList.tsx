@@ -3,9 +3,9 @@ import Image from "next/image";
 
 // Add your images here
 const IMAGES = [
-  { id: 1, url: "/updates/update1.webp" },
-  { id: 2, url: "/updates/update2.webp" },
-  { id: 3, url: "/updates/update3.webp" },
+  { id: 1, url: `${process.env.NEXT_PUBLIC_R2_URL}/updates/update1.webp` },
+  { id: 2, url: `${process.env.NEXT_PUBLIC_R2_URL}/updates/update2.webp` },
+  { id: 3, url: `${process.env.NEXT_PUBLIC_R2_URL}/updates/update3.webp` },
 ];
 
 export default function UpdatesList() {

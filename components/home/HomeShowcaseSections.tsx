@@ -14,14 +14,14 @@ const IMPACT_AREAS = [
     title: "Legal & RTI Support",
     text: "Practical help for citizens who need guidance with applications, appeals, rights, and official documents.",
     icon: FileText,
-    image: "/services/rti.webp",
+    image: `${process.env.NEXT_PUBLIC_R2_URL}/services/rti.webp`,
     href: "/services/rti",
   },
   {
     title: "Health & Relief Work",
     text: "Medical camps, blood donation coordination, food support, and immediate welfare response for vulnerable families.",
     icon: HeartPulse,
-    image: "/services/medical.webp",
+    image: `${process.env.NEXT_PUBLIC_R2_URL}/services/medical.webp`,
     href: "/services/medical",
   },
   {

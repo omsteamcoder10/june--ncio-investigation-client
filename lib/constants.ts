@@ -54,7 +54,7 @@ export const SERVICES: Service[] = [
       "If your RTI application is denied or ignored, NCIO helps you file a First Appeal and if necessary, a Second Appeal to the State Information Commission. We ensure your right to information is not suppressed.",
       "Services include: RTI application drafting, filing assistance, response tracking, first and second appeals, and awareness workshops for communities.",
     ],
-    photo: "/services/rti.webp",
+    photo: `${process.env.NEXT_PUBLIC_R2_URL}/services/rti.webp`,
   },
   {
     id: "legal",
@@ -67,7 +67,7 @@ export const SERVICES: Service[] = [
       "Beyond individual cases, NCIO conducts regular legal literacy programs in villages and urban slums, training people to recognize when their rights are being violated and what steps to take.",
       "Services include: free legal consultation, document preparation, court referrals, Lok Adalat representation, and consumer forum complaints.",
     ],
-    photo: "/services/free-legal.webp",
+    photo: `${process.env.NEXT_PUBLIC_R2_URL}/services/free-legal.webp`,
   },
   {
     id: "education",
@@ -80,7 +80,7 @@ export const SERVICES: Service[] = [
       "NCIO distributes free books, stationery, and school bags to students at the start of each academic year. We also run free tuition centres in several districts staffed by qualified volunteer teachers.",
       "Programs include: scholarship guidance, book distribution drives, free tuition centres, bridge courses for school dropouts, and vocational training for youth.",
     ],
-    photo: "/services/education.webp",
+    photo: `${process.env.NEXT_PUBLIC_R2_URL}/services/education.webp`,
   },
   {
     id: "nri",
@@ -93,7 +93,7 @@ export const SERVICES: Service[] = [
       "A critical part of our NRI work involves the rescue and rehabilitation of bonded or stranded labourers in the Gulf countries. We coordinate with embassies, the Ministry of External Affairs, and local authorities to bring affected individuals home.",
       "Services include: property dispute assistance, POA documentation, bonded labour rescue coordination, embassy liaison, and family welfare support.",
     ],
-    photo: "/services/nri.webp",
+    photo: `${process.env.NEXT_PUBLIC_R2_URL}/services/nri.webp`,
   },
   {
     id: "medical",
@@ -106,7 +106,7 @@ export const SERVICES: Service[] = [
       "Our medical camps have served over 50,000 patients across Tamil Nadu since our founding. We coordinate with retired doctors, medical colleges, and pharmaceutical companies to maximise our reach.",
       "Services include: general health checkups, specialist consultations, free medicines, diagnostic tests, health awareness sessions, and hospital referral support.",
     ],
-    photo: "/services/medical.webp",
+    photo: `${process.env.NEXT_PUBLIC_R2_URL}/services/medical.webp`,
   },
   {
     id: "blood-donation",
@@ -119,7 +119,7 @@ export const SERVICES: Service[] = [
       "The NCIO Emergency Blood Network connects critically ill patients in need of rare blood groups with willing donors within hours. Many families have been saved from crisis through this network.",
       "Services include: donation camp organisation, donor registry maintenance, emergency blood coordination, rare blood group network, and thalassemia support.",
     ],
-    photo: "/services/blood.webp",
+    photo: `${process.env.NEXT_PUBLIC_R2_URL}/services/blood.webp`,
   },
   {
     id: "environment",
@@ -132,7 +132,7 @@ export const SERVICES: Service[] = [
       "Our awareness programs target schools, colleges, and village communities, educating citizens about plastic pollution, water conservation, and sustainable living practices.",
       "Programs include: tree planting drives, plastic collection campaigns, river and beach cleanup drives, school environmental clubs, and community composting initiatives.",
     ],
-    photo: "/services/environment.webp",
+    photo: `${process.env.NEXT_PUBLIC_R2_URL}/services/environment.webp`,
   },
   {
     id: "hunger",
@@ -145,7 +145,7 @@ export const SERVICES: Service[] = [
       "During natural disasters and emergencies, NCIO rapidly scales up food distribution to affected communities. We have served relief meals to thousands of families during floods and cyclones in Tamil Nadu.",
       "Programs include: daily meal distribution, emergency food relief, provision packets for displaced families, senior citizen nutrition support, and festival food drives.",
     ],
-    photo: "/services/hunger.webp",
+    photo: `${process.env.NEXT_PUBLIC_R2_URL}/services/hunger.webp`,
   },
 ];
 
