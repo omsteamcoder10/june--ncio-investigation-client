@@ -503,18 +503,18 @@ export default function TeamPage() {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
-              href="/membership#apply"
-              className="w-full sm:w-auto rounded-full bg-gradient-to-r from-[#b8860b] via-[#fff0a3] to-[#b8860b] px-6 sm:px-8 py-3 sm:py-4 text-xs sm:text-sm font-black text-[#06183d] shadow-lg transition-all duration-200 hover:-translate-y-0.5"
-            >
-              Apply for Membership
-            </Link>
+  href="/membership#apply"
+  className="w-auto sm:w-auto rounded-full bg-gradient-to-r from-[#b8860b] via-[#fff0a3] to-[#b8860b] px-6 sm:px-8 py-3 sm:py-4 text-xs sm:text-sm font-black text-[#06183d] shadow-lg transition-all duration-200 hover:-translate-y-0.5"
+>
+  Apply for Membership
+</Link>
 
-            <Link
-              href="/contact"
-              className="w-full sm:w-auto rounded-full border border-white/30 px-6 sm:px-8 py-3 sm:py-4 text-xs sm:text-sm font-semibold text-white transition-all duration-200 hover:bg-white/10"
-            >
-              Contact Us
-            </Link>
+<Link
+  href="/contact"
+  className="w-auto sm:w-auto rounded-full border border-white/30 px-6 sm:px-8 py-3 sm:py-4 text-xs sm:text-sm font-semibold text-white transition-all duration-200 hover:bg-white/10"
+>
+  Contact Us
+</Link>
           </div>
         </div>
       </section>

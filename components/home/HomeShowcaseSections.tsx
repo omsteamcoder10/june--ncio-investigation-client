@@ -34,10 +34,22 @@ const IMPACT_AREAS = [
 ];
 
 const TIMELINE = [
-  { title: "Receive Request", text: "Members collect the concern, location, contact details, and supporting documents." },
-  { title: "Assign Support", text: "The right district or service team studies the need and prepares the next action." },
-  { title: "Coordinate Action", text: "NCIO follows up through calls, camps, referrals, paperwork, or field support." },
-  { title: "Track Outcome", text: "Volunteers stay connected so requests do not disappear after the first response." },
+  {
+    title: "Receive the Request",
+    text: "Members collect the concern, location, contact details, and relevant supporting documents.",
+  },
+  {
+    title: "Assess & Assign Support",
+    text: "The appropriate district or service team reviews the request and determines the next steps.",
+  },
+  {
+    title: "Coordinate Action",
+    text: "NCIO coordinates appropriate follow-up through calls, referrals, documentation assistance, camps, or field support.",
+  },
+  {
+    title: "Follow Up & Track Progress",
+    text: "Volunteers stay connected and follow up appropriately so that requests receive proper attention.",
+  },
 ];
 
 export default function HomeShowcaseSections() {
@@ -55,6 +67,7 @@ export default function HomeShowcaseSections() {
           <div className="grid md:grid-cols-3 gap-8">
             {IMPACT_AREAS.map((area) => {
               const Icon = area.icon;
+
               return (
                 <Link
                   key={area.title}
@@ -64,8 +77,15 @@ export default function HomeShowcaseSections() {
                   <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#06183d] text-[#d4af37]">
                     <Icon size={24} />
                   </div>
-                  <h3 className="text-2xl font-bold text-[#06183d] mb-3">{area.title}</h3>
-                  <p className="text-slate-600 leading-relaxed mb-8 flex-grow">{area.text}</p>
+
+                  <h3 className="text-2xl font-bold text-[#06183d] mb-3">
+                    {area.title}
+                  </h3>
+
+                  <p className="text-slate-600 leading-relaxed mb-8 flex-grow">
+                    {area.text}
+                  </p>
+
                   {/* <span className="inline-flex items-center gap-2 font-bold text-[#b8860b]">
                     Explore <ArrowRight size={16} />
                   </span> */}
@@ -76,16 +96,33 @@ export default function HomeShowcaseSections() {
         </div>
       </section>
 
-      {/* Timeline Section */}
+      {/* How We Work Section */}
       <section className="bg-[#06183d] py-24 text-white">
         <div className="mx-auto max-w-7xl px-6">
           <div className="grid lg:grid-cols-[0.4fr_0.6fr] gap-16 items-center">
             <div>
-              <p className="text-[#f8e287] font-bold tracking-widest uppercase text-sm mb-4">Action Method</p>
-              <h2 className="text-4xl font-bold leading-tight mb-6">A simple process that keeps every request moving.</h2>
+              <p className="text-[#f8e287] font-bold tracking-widest uppercase text-sm mb-4">
+                How We Work
+              </p>
+
+              <h2 className="text-4xl font-bold leading-tight mb-6">
+                How We Work
+              </h2>
+
               <div className="flex gap-4">
-                <Link href="/verify-id" className="px-6 py-3 rounded-full bg-white text-[#06183d] font-bold hover:bg-slate-200 transition">Verify ID</Link>
-                <Link href="/member-portal" className="px-6 py-3 rounded-full border border-[#d4af37] text-[#f8e287] font-bold hover:bg-[#d4af37]/10 transition">Portal</Link>
+                <Link
+                  href="/verify-id"
+                  className="px-6 py-3 rounded-full bg-white text-[#06183d] font-bold hover:bg-slate-200 transition"
+                >
+                  Verify ID
+                </Link>
+
+                <Link
+                  href="/member-portal"
+                  className="px-6 py-3 rounded-full border border-[#d4af37] text-[#f8e287] font-bold hover:bg-[#d4af37]/10 transition"
+                >
+                  Portal
+                </Link>
               </div>
             </div>
 
@@ -96,11 +133,20 @@ export default function HomeShowcaseSections() {
                     <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[#d4af37] bg-[#06183d] font-bold text-[#d4af37]">
                       {index + 1}
                     </div>
-                    {index !== TIMELINE.length - 1 && <div className="mt-2 w-0.5 grow bg-slate-700" />}
+
+                    {index !== TIMELINE.length - 1 && (
+                      <div className="mt-2 w-0.5 grow bg-slate-700" />
+                    )}
                   </div>
+
                   <div className="pb-8">
-                    <h3 className="text-xl font-bold text-white mb-2">{item.title}</h3>
-                    <p className="text-slate-400 leading-relaxed">{item.text}</p>
+                    <h3 className="text-xl font-bold text-white mb-2">
+                      {item.title}
+                    </h3>
+
+                    <p className="text-slate-400 leading-relaxed">
+                      {item.text}
+                    </p>
                   </div>
                 </div>
               ))}

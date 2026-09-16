@@ -1,9 +1,77 @@
 // components/home/ServicesGrid.tsx
 
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import {
+  ArrowRight,
+  FileText,
+  Scale,
+  GraduationCap,
+  Plane,
+  HeartPulse,
+  Droplet,
+  Trees,
+  Utensils,
+} from "lucide-react";
 import SectionHeading from "@/components/shared/SectionHeading";
-import { SERVICES } from "@/lib/constants";
+
+const SERVICES = [
+  {
+    id: "rti-assistance",
+    title: "RTI Assistance",
+    shortDesc:
+      "Support with Right to Information applications, appeals, documentation, and follow-up.",
+    icon: <FileText />,
+  },
+  {
+    id: "free-legal-assistance",
+    title: "Free Legal Assistance",
+    shortDesc:
+      "Legal guidance, documentation support, and advocate referrals for eligible individuals.",
+    icon: <Scale />,
+  },
+  {
+    id: "education-support",
+    title: "Education Support",
+    shortDesc:
+      "Scholarships, educational materials, and student support initiatives.",
+    icon: <GraduationCap />,
+  },
+  {
+    id: "nri-support-services",
+    title: "NRI Support Services",
+    shortDesc:
+      "Assistance and coordination for Non-Resident Indians and their families in appropriate matters.",
+    icon: <Plane />,
+  },
+  {
+    id: "medical-camps",
+    title: "Medical Camps",
+    shortDesc:
+      "Medical camps, health screenings, basic healthcare support, medicines, and referrals.",
+    icon: <HeartPulse />,
+  },
+  {
+    id: "blood-donation-drives",
+    title: "Blood Donation Drives",
+    shortDesc:
+      "Blood donation camps and coordination with voluntary blood donors during emergencies.",
+    icon: <Droplet />,
+  },
+  {
+    id: "environmental-initiatives",
+    title: "Environmental Initiatives",
+    shortDesc:
+      "Tree planting, environmental clean-up activities, and public awareness programs.",
+    icon: <Trees />,
+  },
+  {
+    id: "hunger-relief",
+    title: "Hunger Relief",
+    shortDesc:
+      "Food distribution and relief support for vulnerable individuals and families.",
+    icon: <Utensils />,
+  },
+];
 
 export default function ServicesGrid() {
   return (
@@ -12,7 +80,7 @@ export default function ServicesGrid() {
 
         <SectionHeading
           badge=""
-          title="Ways We Help"
+          title="Our Services"
           subtitle=""
         />
 
@@ -56,7 +124,7 @@ export default function ServicesGrid() {
               {/* Icon */}
               <div
                 className="
-                  w-12 sm:w-14 md:w-16 
+                  w-12 sm:w-14 md:w-16
                   h-12 sm:h-14 md:h-16
                   rounded-xl
                   flex items-center justify-center
@@ -106,24 +174,6 @@ export default function ServicesGrid() {
                 {svc.shortDesc}
               </p>
 
-              {/* Learn More - Visible on all devices */}
-              {/* <div
-                className="
-                  flex
-                  items-center gap-2
-                  text-[#f8e287]
-                  font-semibold
-                  text-xs sm:text-sm
-                  mt-3 sm:mt-4 md:mt-6
-                  group-hover:gap-4
-                  transition-all
-                  flex-shrink-0
-                "
-              >
-                Learn More
-                <ArrowRight size={14} className="sm:w-4 sm:h-4" />
-              </div> */}
-
               {/* Gold Corner Glow */}
               <div
                 className="
@@ -137,6 +187,7 @@ export default function ServicesGrid() {
                   blur-2xl
                 "
               />
+
             </Link>
           ))}
 
