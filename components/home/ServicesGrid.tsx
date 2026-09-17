@@ -1,8 +1,6 @@
 // components/home/ServicesGrid.tsx
 
-import Link from "next/link";
 import {
-  ArrowRight,
   FileText,
   Scale,
   GraduationCap,
@@ -87,9 +85,8 @@ export default function ServicesGrid() {
         <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-5 lg:grid-cols-4 lg:gap-6 mt-8 sm:mt-10 md:mt-12">
 
           {SERVICES.map((svc) => (
-            <Link
+            <div
               key={svc.id}
-              href={`/services/${svc.id}`}
               className="
                 group
                 relative
@@ -188,7 +185,7 @@ export default function ServicesGrid() {
                 "
               />
 
-            </Link>
+            </div>
           ))}
 
         </div>
