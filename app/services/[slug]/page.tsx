@@ -7,26 +7,32 @@ import { SERVICES } from "@/lib/constants";
 import { getSeoMeta } from "@/lib/getSeoMeta";
 
 export function generateStaticParams() {
-  return SERVICES.map((s) => ({ slug: s.id }));
+  return SERVICES.map((s) => ({
+    slug: s.id,
+  }));
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
+  const { slug } = await params;
+
   return getSeoMeta(
-    `/services/${params.slug}`,
-    `${params.slug} - NCIO Services`
+    `/services/${slug}`,
+    `${slug} - NCIO Services`
   );
 }
 
-export default function ServicePage({
+export default async function ServicePage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const service = SERVICES.find((s) => s.id === params.slug);
+  const { slug } = await params;
+
+  const service = SERVICES.find((s) => s.id === slug);
 
   if (!service) {
     notFound();
