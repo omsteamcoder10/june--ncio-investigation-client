@@ -146,7 +146,6 @@ export default function Navbar() {
     <>
       {/* =========================================================
           MAIN NAVBAR
-          DESKTOP DESIGN KEPT
       ========================================================= */}
       <nav
         className={`fixed top-0 left-0 right-0 w-full z-[9990] transition-all duration-300 border-b border-[#d4af37]/40 ${
@@ -189,7 +188,8 @@ export default function Navbar() {
               className="flex min-w-0 flex-shrink items-center gap-1.5 sm:gap-2.5 md:gap-3 group"
               onClick={() => setMobileOpen(false)}
             >
-              <div className="relative flex-shrink-0 w-11 h-11 sm:w-16 sm:h-16 md:w-16 md:h-16 lg:w-16 lg:h-16 xl:w-20 xl:h-20 transition-all duration-500 group-hover:scale-105">
+              {/* LOGO — fixed sizing prevents cropping on scroll */}
+              <div className="relative flex-shrink-0 w-11 h-11 sm:w-16 sm:h-16 md:w-16 md:h-16 lg:w-16 lg:h-16 xl:w-20 xl:h-20 transition-all duration-500 group-hover:scale-105 origin-center mt-1 sm:mt-0">
                 <div className="absolute inset-0 bg-gradient-to-r from-amber-300/30 to-yellow-300/30 rounded-full blur-2xl group-hover:blur-3xl transition-all duration-700" />
 
                 <Image
@@ -200,17 +200,19 @@ export default function Navbar() {
                   priority
                 />
 
+                {/* ® */}
                 <span
-                  className="absolute -top-1 -right-1 sm:-top-1.5 sm:-right-1.5 z-20 flex items-center justify-center w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-white border border-[#08215F] text-[7px] sm:text-[9px] md:text-[10px] font-black text-[#08215F] shadow-md"
+                  className="absolute top-0 right-0 z-20 flex items-center justify-center text-[14px] sm:text-[17px] md:text-[20px] lg:text-[22px] font-black text-[#08215F] scale-110 origin-top-right leading-none"
                   aria-label="Registered Trademark"
                 >
                   ®
                 </span>
               </div>
 
+              {/* TEXT */}
               <div className="min-w-0 flex flex-col leading-[1.05]">
                 <span
-                  className="text-[8.5px] sm:text-[13px] md:text-sm lg:text-sm xl:text-base font-black text-[#08215F] uppercase whitespace-nowrap tracking-wide"
+                  className="text-[11.5px] sm:text-[13px] md:text-sm lg:text-sm xl:text-base font-black text-[#08215F] uppercase whitespace-nowrap tracking-wide"
                   style={{
                     textShadow: "0 0.5px 0 #08215F",
                   }}
@@ -219,7 +221,7 @@ export default function Navbar() {
                 </span>
 
                 <span
-                  className="text-[7.5px] sm:text-[11px] md:text-xs lg:text-xs xl:text-sm font-black text-[#08215F] uppercase whitespace-nowrap"
+                  className="text-[10px] sm:text-[11px] md:text-xs lg:text-xs xl:text-sm font-black text-[#08215F] uppercase whitespace-nowrap"
                   style={{
                     letterSpacing: "0.04em",
                     textShadow: "0 0.5px 0 #08215F",
@@ -229,7 +231,7 @@ export default function Navbar() {
                 </span>
 
                 <span
-                  className="mt-0.5 text-[6px] sm:text-[8.5px] md:text-[9px] lg:text-[10px] xl:text-xs font-bold text-[#08215F] uppercase whitespace-nowrap"
+                  className="mt-0.5 text-[8px] sm:text-[8.5px] md:text-[9px] lg:text-[10px] xl:text-xs font-bold text-[#08215F] uppercase whitespace-nowrap"
                   style={{
                     letterSpacing: "0.035em",
                     textShadow: "0 0.3px 0 #08215F",
@@ -242,7 +244,6 @@ export default function Navbar() {
 
             {/* =====================================================
                 DESKTOP NAVIGATION
-                NO DESKTOP CHANGE
             ===================================================== */}
             <div className="hidden lg:flex items-center gap-0.5 xl:gap-1">
               {NAV_LINKS.map((link) =>
@@ -405,10 +406,6 @@ export default function Navbar() {
 
         {/* =======================================================
             MOBILE MENU
-
-            IMPORTANT:
-            This stays INSIDE the nav stacking context.
-            Overlay is below nav.
         ======================================================= */}
         <div
           className={`
@@ -438,9 +435,7 @@ export default function Navbar() {
         >
           <div className="h-full overflow-y-auto bg-gradient-to-b from-[#06183d] via-[#08204d] to-[#0a2459]">
 
-            {/* =================================================
-                MOBILE HEADER
-            ================================================= */}
+            {/* MOBILE HEADER */}
             <div className="sticky top-0 z-20 flex items-center justify-between px-4 sm:px-5 py-4 bg-[#06183d] border-b border-[#d4af37]/30">
 
               <div className="flex items-center gap-2.5 min-w-0">
@@ -475,15 +470,12 @@ export default function Navbar() {
               </button>
             </div>
 
-            {/* =================================================
-                MOBILE LINKS
-            ================================================= */}
+            {/* MOBILE LINKS */}
             <div className="px-3 sm:px-4 py-4 space-y-1">
 
               {NAV_LINKS.map((link) =>
                 link.dropdown ? (
                   <div key={link.label} className="space-y-1">
-                    {/* SERVICES */}
                     <button
                       type="button"
                       className="w-full flex items-center justify-between px-4 py-3.5 sm:py-4 rounded-xl text-[15px] sm:text-base font-bold text-white hover:text-[#f8e287] bg-white/[0.03] hover:bg-[#f8e287]/10 transition-all"
@@ -492,9 +484,7 @@ export default function Navbar() {
                       <span className="flex items-center gap-3">
                         <span className="flex-shrink-0 w-2 h-2 rounded-full bg-[#d4af37]" />
 
-                        <span>
-                          Services
-                        </span>
+                        <span>Services</span>
                       </span>
 
                       <ChevronDown
@@ -505,7 +495,6 @@ export default function Navbar() {
                       />
                     </button>
 
-                    {/* SERVICE ITEMS */}
                     {servicesOpen && (
                       <div className="ml-2 sm:ml-4 mt-1 space-y-1.5 rounded-xl border border-[#d4af37]/30 bg-[#041533] p-2.5">
 
@@ -569,9 +558,7 @@ export default function Navbar() {
                       }
                     `}
                   >
-                    <span>
-                      {link.label}
-                    </span>
+                    <span>{link.label}</span>
 
                     {pathname === link.href && (
                       <span className="w-2 h-2 rounded-full bg-[#d4af37]" />
@@ -580,9 +567,7 @@ export default function Navbar() {
                 )
               )}
 
-              {/* =================================================
-                  MOBILE CTA
-              ================================================= */}
+              {/* MOBILE CTA */}
               <div className="pt-5 mt-5 border-t border-[#d4af37]/30 space-y-3">
 
                 <Link
@@ -606,15 +591,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* =========================================================
-          MOBILE OVERLAY
-
-          IMPORTANT FIX:
-          z-[9980] is BELOW navbar z-[9990].
-
-          Previously overlay was z-[99980], which caused the
-          dark overlay to cover the mobile menu.
-      ========================================================= */}
+      {/* MOBILE OVERLAY */}
       {mobileOpen && (
         <div
           className="lg:hidden fixed inset-0 z-[9980] bg-black/55 backdrop-blur-[1px]"
@@ -623,9 +600,7 @@ export default function Navbar() {
         />
       )}
 
-      {/* =========================================================
-          ANIMATIONS
-      ========================================================= */}
+      {/* ANIMATIONS */}
       <style jsx>{`
         @keyframes slideDown {
           from {

@@ -22,10 +22,10 @@ export default function Footer() {
           <div className="sm:col-span-2 lg:col-span-1">
             <Link
               href="/"
-              className="flex items-center gap-2 sm:gap-3 group mb-3 sm:mb-4"
+              className="flex items-start gap-2.5 sm:gap-3 group mb-4 sm:mb-5"
             >
               {/* Logo */}
-              <div className="relative w-12 h-12 xs:w-14 xs:h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 transition-all duration-500 group-hover:scale-105 flex-shrink-0">
+              <div className="relative w-12 h-12 xs:w-14 xs:h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 transition-all duration-500 group-hover:scale-105 flex-shrink-0 mt-0.5">
                 <div className="absolute inset-0 bg-gradient-to-r from-amber-300/30 to-yellow-300/30 rounded-full blur-2xl group-hover:blur-3xl transition-all duration-700"></div>
 
                 <Image
@@ -35,31 +35,34 @@ export default function Footer() {
                   className="object-contain drop-shadow-2xl relative z-10"
                   priority
                 />
+
+                {/* ® — exact match to header */}
+                <span
+                  className="absolute -top-1 -right-1 sm:-top-1.5 sm:-right-1.5 z-20 flex items-center justify-center text-[12px] sm:text-[14px] font-black text-[#08215F] scale-110 origin-top-right leading-none"
+                  aria-label="Registered Trademark"
+                >
+                  ®
+                </span>
               </div>
 
-              {/* Company Name */}
-              <div className="flex flex-col leading-[1]">
-                <span
-                  className="text-[8px] xs:text-[10px] sm:text-xs md:text-sm lg:text-lg xl:text-xl font-black text-[#08215F] uppercase whitespace-nowrap"
-                  style={{ textShadow: "0 0.5px 0 #08215F" }}
-                >
+              {/* Company Name — Constrained Width to wrap like header */}
+              <div className="flex flex-col leading-[1.1] max-w-[200px] sm:max-w-[240px] mt-1 pt-[2px]">
+                <span className="text-[11px] sm:text-[13px] font-black text-[#08215F] uppercase tracking-wide">
                   NATIONAL CRIME
                 </span>
 
-                <span
-                  className="text-[7px] xs:text-[9px] sm:text-[10px] md:text-xs lg:text-base xl:text-lg font-black text-[#08215F] uppercase whitespace-nowrap"
-                  style={{
-                    letterSpacing: "0.08em",
-                    textShadow: "0 0.5px 0 #08215F",
-                  }}
-                >
+                <span className="text-[10px] sm:text-[12px] font-black text-[#08215F] uppercase tracking-wider mt-0.5">
                   INVESTIGATES ORGANIZATION
+                </span>
+
+                <span className="text-[7.5px] sm:text-[9px] font-bold text-[#b8860b] uppercase tracking-widest mt-1">
+                  (AN INTERNATIONAL ORGANIZATION)
                 </span>
               </div>
             </Link>
 
             {/* Client Tagline */}
-            <p className="text-gray-600 text-xs sm:text-sm leading-relaxed mb-3 sm:mb-4">
+            <p className="text-gray-600 text-xs sm:text-sm leading-relaxed mb-4 sm:mb-5">
               Working for justice, healthcare, education, and dignity for
               every citizen of India.
             </p>

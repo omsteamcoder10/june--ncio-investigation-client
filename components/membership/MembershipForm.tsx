@@ -431,6 +431,7 @@ if (submitted) {
             <label className="mb-1 block text-xs sm:text-sm lg:text-[15px] font-semibold text-slate-700">Membership Type *</label>
             <select {...register("membershipType", { required: true })} className={inp(!!errors.membershipType)}>
               <option value="">Select membership type</option>
+              <option value="MEMBER">Just Member</option>
               <option value="DISTRICT">District Member</option>
               <option value="STATE">State Member</option>
               <option value="ZONAL">Zonal Member</option>
